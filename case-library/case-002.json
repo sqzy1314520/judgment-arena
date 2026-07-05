@@ -2,6 +2,13 @@
   "id": "case-002",
   "title": "朋友借钱，借不借",
   "type": "人生决策",
+  "cognitive_frame": "decision-framework",
+  "prototype": "人情vs利害",
+  "frame_dimensions": {
+    "define_decision": "你真正在决定的是借钱，还是决定这段友谊的边界？",
+    "decompose_options": "借/不借之外——借一部分、帮他找别的筹钱渠道",
+    "stress_test": "信任测试：如果明天要向全家人解释你的决定，你站得住吗？"
+  },
   "version": "1.0",
 
   "scenario": {

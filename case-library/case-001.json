@@ -2,6 +2,13 @@
   "id": "case-001",
   "title": "该不该跳槽——新机会还是舒适区",
   "type": "人生决策",
+  "cognitive_frame": "cognitive-sovereignty",
+  "prototype": "安全vs成长",
+  "frame_dimensions": {
+    "meaning_perception": "你现在的工作还能让你感知到成长吗？三年前的兴奋→今天的疲态→三年后的麻木",
+    "value_judgment": "什么是你的价值？三年的工龄换一个稳定，还是一次不确定性换新可能",
+    "world_construction": "你在建'我试过了'还是'我忍住了'的人生版本"
+  },
   "version": "1.0",
 
   "scenario": {
