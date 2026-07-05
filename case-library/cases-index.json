@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "updated": "2026-07-05",
+  "builtin_cases": [
+    {"id": "case-001", "title": "该不该跳槽——新机会还是舒适区", "type": "人生决策", "subtype": "职业选择"},
+    {"id": "case-002", "title": "朋友借钱，借不借", "type": "人生决策", "subtype": "人际关系"},
+    {"id": "case-003", "title": "该不该买——双十一购物车清不清", "type": "消费决策", "subtype": "消费"},
+    {"id": "case-004", "title": "该不该开口——发现同事的错说不说", "type": "人际关系", "subtype": "职场"},
+    {"id": "case-005", "title": "该不该学——AI来了要不要报班", "type": "学习决策", "subtype": "学习"}
+  ],
+  "user_cases": {},
+  "types": ["人生决策", "消费决策", "人际关系", "学习决策"]
+}
