@@ -1,13 +1,125 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "updated": "2026-07-05",
+  "total": 15,
+  "prototypes": {
+    "安全vs成长": 5,
+    "人情vs利害": 4,
+    "需要vs想要": 3,
+    "花钱买安心": 3
+  },
   "builtin_cases": [
-    {"id": "case-001", "title": "该不该跳槽——新机会还是舒适区", "type": "人生决策", "subtype": "职业选择"},
-    {"id": "case-002", "title": "朋友借钱，借不借", "type": "人生决策", "subtype": "人际关系"},
-    {"id": "case-003", "title": "该不该买——双十一购物车清不清", "type": "消费决策", "subtype": "消费"},
-    {"id": "case-004", "title": "该不该开口——发现同事的错说不说", "type": "人际关系", "subtype": "职场"},
-    {"id": "case-005", "title": "该不该学——AI来了要不要报班", "type": "学习决策", "subtype": "学习"}
+    {
+      "id": "case-001",
+      "title": "该不该跳槽——新机会还是舒适区",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-002",
+      "title": "朋友借钱，借不借",
+      "type": "人生决策",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-003",
+      "title": "该不该买——双十一的购物车，清还是不清",
+      "type": "消费决策",
+      "prototype": "需要vs想要",
+      "cognitive_frame": "first-principles"
+    },
+    {
+      "id": "case-004",
+      "title": "该不该开口——发现同事的错，说还是不说",
+      "type": "人际关系",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-005",
+      "title": "该不该学——AI时代来了，要不要报班",
+      "type": "学习决策",
+      "prototype": "花钱买安心",
+      "cognitive_frame": "sharp-edge-standard"
+    },
+    {
+      "id": "case-006",
+      "title": "该不该换个城市——去更大的世界还是守着已有的生活",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-007",
+      "title": "该不该离婚——留下来将就还是走出去重新开始",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-008",
+      "title": "该不该转行——深耕已有的专业还是清零去追一个新的方向",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-009",
+      "title": "要不要二孩——多一个孩子是加法还是减法",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-010",
+      "title": "该不该帮忙——同事甩锅让你帮忙擦屁股",
+      "type": "人际关系",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-011",
+      "title": "该不该拉黑——一个让你负能量的朋友，还要不要继续联系",
+      "type": "人际关系",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-012",
+      "title": "该不该换车——车还能开，但你很想换",
+      "type": "消费决策",
+      "prototype": "需要vs想要",
+      "cognitive_frame": "first-principles"
+    },
+    {
+      "id": "case-013",
+      "title": "该不该囤书——书架上堆满了买了但没读的书",
+      "type": "消费决策",
+      "prototype": "需要vs想要",
+      "cognitive_frame": "first-principles"
+    },
+    {
+      "id": "case-014",
+      "title": "该不该考公——当前的职业累了，铁饭碗是解药还是错觉",
+      "type": "学习决策",
+      "prototype": "花钱买安心",
+      "cognitive_frame": "sharp-edge-standard"
+    },
+    {
+      "id": "case-015",
+      "title": "该不该考证——花半年时间考个不会用的证书",
+      "type": "学习决策",
+      "prototype": "花钱买安心",
+      "cognitive_frame": "sharp-edge-standard"
+    }
   ],
-  "user_cases": {},
-  "types": ["人生决策", "消费决策", "人际关系", "学习决策"]
+  "user_cases": [],
+  "types": [
+    "人生决策",
+    "消费决策",
+    "人际关系",
+    "学习决策"
+  ]
 }
