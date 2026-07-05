@@ -5,7 +5,7 @@ description: >
   21天三阶段：看见盲区→理解框架→内化判断。
 version: 2.0.0
 category: methodology
-author: Judgment Arena Team
+author: 智正行动 · 小智 & 勇哥
 license: MIT
 created: 2026-07-04
 updated: 2026-07-04
@@ -35,7 +35,7 @@ references:
   ndm: >
     Naturalistic Decision Making (Gary Klein) — 自然主义决策。
     影子对手训练、事前检讨法(premortem)、决策记分卡、实战中训练。
-  - cognitive-sovereignty: 哲学底层
+  cognitive_sovereignty: 哲学底层——判断力是人类最后堡垒。
 ---
 
 # 判断力格斗场 · Judgment Arena v2.0
@@ -144,6 +144,22 @@ AI平权了信息处理能力之后，个体的不可替代性不在于知道多
 
 给定一个真实决策场景，你独立判断 → 圆桌对撞 → 苏格拉底追问 → 复盘。
 
+#### 模式选择
+
+开始前先选模式：
+
+| 模式 | 适用场景 | 流程 | 预计耗时 |
+|:-----|:---------|:-----|:---------|
+| **快速模式** | 时间紧、首次体验、问题简单 | 案例→判断→三刀精简版（每人1-2句）→1个追问→复盘 | ~5分钟 |
+| **标准模式** | 深度训练、复杂案例 | 完整7步：案例→判断→圆桌对撞→反方协议→苏格拉底追问（5类选2-3）→复盘→记录 | ~15-20分钟 |
+
+可用控制命令随时调整流程：
+- `/skip` — 跳过当前追问，进入下一步
+- `/back` — 回到上一步修改
+- `/status` — 查看当前进度
+
+#### 标准模式流程
+
 ```
 步骤1：【案例呈现】
    一个真实的问题场景。只给事实和约束条件，不加判断。
@@ -243,6 +259,18 @@ AI平权了信息处理能力之后，个体的不可替代性不在于知道多
 
 **核心追问：** 你确定你知道自己在假设什么吗？
 
+## 案例-模型绑定
+
+不同决策类型，三把刀的权重和追问方向不同。开始训练时自动匹配：
+
+| 案例类型 | 加重哪把刀 | 追加追问方向 |
+|:---------|:----------|:-------------|
+| 技术决策 | 反事实者 | 加重"如果假设不成立"的追问深度 |
+| 管理决策 | 换位者 | 增加"执行者"和"上级"两个固定角色位 |
+| 投资决策 | 时间折叠人 | 时间尺度拉到5年、10年 |
+| 人生决策 | 苏格拉底追问 | 增加"澄清"类追问频次 |
+| 资源分配 | 换位者+反事实者 | 双刀加重，多轮换位 |
+
 ## 进阶模式：外部视角加载
 
 当Hermes已加载以下skills时，自动追加视角对撞：
@@ -330,6 +358,8 @@ AI平权了信息处理能力之后，个体的不可替代性不在于知道多
 
 ## 交互入口
 
+项目已发布至 GitHub：https://github.com/sqzy1314520/judgment-arena
+
 加载此SKILL后，自动展示入口：
 
 ```
@@ -392,10 +422,10 @@ AI平权了信息处理能力之后，个体的不可替代性不在于知道多
    阶段三（15-21次）：内化判断
 
 交互式HTML入口（浏览器打开，无需后端）：
-  html/index.html
+  D:\Hermes\recreation\product\judgment-arena.html
 
 companion script（状态管理）：
-  运行 python scripts/judgment.py status
+  python skills/methodology/judgment-arena/scripts/judgment.py status
 
 理论依据：
   references/theory-manifesto.md
@@ -410,7 +440,7 @@ companion script（状态管理）：
 | references/theory-manifesto.md | references/theory-manifesto.md | 理论宣言——判断力训练设计依据 |
 | references/design-four-questions.md | references/design-four-questions.md | 底层设计四问 |
 | references/adversarial-review.md | references/adversarial-review.md | 对抗性自检——7个攻击点 |
-| judgment-arena.html | html/index.html | 交互式HTML入口（无后端） |
+| judgment-arena.html | D:\Hermes\recreation\product\judgment-arena.html | 交互式HTML入口（无后端） |
 
 ## 版本记录
 
