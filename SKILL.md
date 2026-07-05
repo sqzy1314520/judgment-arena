@@ -392,10 +392,10 @@ AI平权了信息处理能力之后，个体的不可替代性不在于知道多
    阶段三（15-21次）：内化判断
 
 交互式HTML入口（浏览器打开，无需后端）：
-  D:\Hermes\recreation\product\judgment-arena.html
+  html/index.html
 
 companion script（状态管理）：
-  python skills/methodology/judgment-arena/scripts/judgment.py status
+  运行 python scripts/judgment.py status
 
 理论依据：
   references/theory-manifesto.md
