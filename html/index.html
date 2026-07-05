@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>判断力格斗场 · Judgment Arena</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0c0c0e;
+  --bg-card: #16161a;
+  --bg-card-hover: #1e1e24;
+  --text: #e8e6e3;
+  --text-dim: #8a8a8a;
+  --accent: #d4a853;
+  --accent-dim: #a07830;
+  --border: #2a2a30;
+  --gold: #f0c040;
+  --red: #c0392b;
+  --green: #27ae60;
+}
+html { font-size: 16px; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }
+
+/* ===== 首页 ===== */
+.hero { text-align: center; padding: 80px 0 48px; }
+.hero-badge {
+  display: inline-block;
+  border: 1px solid var(--accent-dim);
+  color: var(--accent);
+  font-size: 14px;
+  padding: 6px 18px;
+  border-radius: 4px;
+  letter-spacing: 3px;
+  margin-bottom: 32px;
+}
+.hero h1 {
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.hero h1 .accent { color: var(--accent); }
+.hero .sub {
+  font-size: 22px;
+  color: var(--text-dim);
+  margin-bottom: 56px;
+}
+.hero .tagline {
+  font-size: 28px;
+  color: var(--text);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+  margin-bottom: 48px;
+  line-height: 1.5;
+}
+
+/* ===== 模式选择 ===== */
+.modes { display: flex; flex-direction: column; gap: 16px; }
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 32px;
+  cursor: pointer;
+  transition: all .25s;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  color: var(--text);
+}
+.mode-btn:hover { background: var(--bg-card-hover); border-color: var(--accent-dim); }
+.mode-btn .icon { font-size: 40px; flex-shrink: 0; }
+.mode-btn .info h3 { font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+.mode-btn .info p { font-size: 17px; color: var(--text-dim); line-height: 1.5; }
+.mode-btn .arrow { margin-left: auto; font-size: 24px; color: var(--accent-dim); }
+
+/* ===== 页面通用 ===== */
+.page { display: none; }
+.page.active { display: block; }
+.page-header { margin-bottom: 48px; }
+.page-header .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 24px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  transition: color .2s;
+}
+.page-header .back:hover { color: var(--accent); }
+.page-header h2 {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.page-header .meta { font-size: 18px; color: var(--text-dim); }
+
+/* ===== 案例区 ===== */
+.case-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 40px;
+  margin-bottom: 32px;
+}
+.case-box h3 { font-size: 28px; font-weight: 600; margin-bottom: 20px; }
+.case-box p { font-size: 18px; line-height: 1.8; margin-bottom: 16px; }
+.case-box p:last-child { margin-bottom: 0; }
+.case-box .highlight {
+  border-left: 3px solid var(--accent);
+  padding-left: 20px;
+  color: var(--accent);
+  font-size: 18px;
+  margin: 20px 0;
+}
+.tag {
+  display: inline-block;
+  background: rgba(212,168,83,0.12);
+  color: var(--accent);
+  font-size: 13px;
+  padding: 3px 12px;
+  border-radius: 4px;
+  letter-spacing: .5px;
+}
+
+/* ===== 判断输入 ===== */
+.judge-area { margin-bottom: 32px; }
+.judge-area label {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.judge-area textarea {
+  width: 100%;
+  min-height: 120px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 18px;
+  font-family: inherit;
+  line-height: 1.7;
+  padding: 20px;
+  resize: vertical;
+  transition: border-color .2s;
+}
+.judge-area textarea:focus { outline: none; border-color: var(--accent-dim); }
+.judge-area .hint { font-size: 15px; color: var(--text-dim); margin-top: 8px; }
+
+/* ===== 按钮 ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #0c0c0e;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 36px;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn:hover { background: var(--gold); transform: translateY(-1px); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+}
+.btn-outline:hover { background: rgba(212,168,83,0.1); }
+.btn-sm { padding: 10px 22px; font-size: 16px; }
+.btn-center { display: flex; justify-content: center; margin: 32px 0; }
+
+/* ===== 三刀展示 ===== */
+.knives { display: flex; flex-direction: column; gap: 20px; margin-bottom: 48px; }
+.knife-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.knife-card.expanded { border-color: var(--accent-dim); }
+.knife-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 32px;
+  cursor: pointer;
+  user-select: none;
+}
+.knife-header:hover { background: var(--bg-card-hover); }
+.knife-header .k-icon { font-size: 28px; flex-shrink: 0; }
+.knife-header .k-info { flex: 1; }
+.knife-header .k-info h4 { font-size: 22px; font-weight: 600; }
+.knife-header .k-info p { font-size: 15px; color: var(--text-dim); }
+.knife-header .k-toggle { font-size: 18px; color: var(--text-dim); transition: transform .3s; }
+.knife-card.expanded .k-toggle { transform: rotate(180deg); }
+.knife-body { display: none; padding: 0 32px 28px; }
+.knife-card.expanded .knife-body { display: block; }
+.knife-body .q {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.knife-body .a {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--text);
+}
+.knife-body .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* ===== 视角展示 ===== */
+.perspectives { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+.persp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.persp-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 32px;
+  cursor: pointer;
+}
+.persp-header:hover { background: var(--bg-card-hover); }
+.persp-header .p-icon { font-size: 24px; }
+.persp-header .p-info h4 { font-size: 20px; font-weight: 600; }
+.persp-header .p-info p { font-size: 14px; color: var(--text-dim); }
+.persp-header .p-toggle { margin-left: auto; font-size: 16px; color: var(--text-dim); transition: transform .3s; }
+.persp-card.expanded .p-toggle { transform: rotate(180deg); }
+.persp-body { display: none; padding: 0 32px 28px; }
+.persp-card.expanded .persp-body { display: block; }
+.persp-body p { font-size: 17px; line-height: 1.8; margin-bottom: 12px; }
+
+/* ===== 复盘区 ===== */
+.review-box {
+  background: var(--bg-card);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 36px 40px;
+  margin: 32px 0;
+}
+.review-box h3 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--gold);
+}
+.review-box p { font-size: 18px; line-height: 1.8; margin-bottom: 12px; }
+.review-box ul { list-style: none; padding: 0; }
+.review-box li {
+  font-size: 18px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.6;
+}
+.review-box li:last-child { border: none; }
+.review-box li::before { content: "→ "; color: var(--accent); }
+
+/* ===== 页脚 ===== */
+.footer {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-dim);
+  padding: 48px 0 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+  .container { padding: 24px 16px; }
+  .hero { padding: 48px 0 32px; }
+  .hero h1 { font-size: 42px; }
+  .hero .tagline { font-size: 22px; }
+  .mode-btn { padding: 20px 24px; }
+  .mode-btn .info h3 { font-size: 22px; }
+  .case-box { padding: 24px; }
+  .case-box h3 { font-size: 24px; }
+  .page-header h2 { font-size: 36px; }
+  .knife-header { padding: 18px 20px; }
+  .knife-body { padding: 0 20px 20px; }
+  .review-box { padding: 24px; }
+  .btn { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+<!-- ========== 首页 ========== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge">JUDGMENT ARENA</div>
+    <h1>判断力<br><span class="accent">格斗场</span></h1>
+    <p class="sub">不是来上课的。是来下场的。</p>
+    <div class="tagline">
+      知识素材是弹药库。<br>
+      判断力是在战场上练出来的。
+    </div>
+
+    <!-- 训练进度条 -->
+    <div id="phase-progress" style="margin-bottom: 40px; display: none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-size:16px;color:var(--text-dim);">训练进度</span>
+        <span id="phase-label" style="font-size:16px;color:var(--accent);">阶段一：看见</span>
+      </div>
+      <div style="background:var(--border);height:8px;border-radius:4px;overflow:hidden;">
+        <div id="progress-bar-fill" style="background:var(--accent);height:100%;width:0%;border-radius:4px;transition:width .6s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;">
+        <span id="progress-count" style="font-size:14px;color:var(--text-dim);">0 / 21 次</span>
+        <span id="progress-percent" style="font-size:14px;color:var(--text-dim);">0%</span>
+      </div>
+    </div>
+  </div>
+  <div class="modes">
+    <button class="mode-btn" onclick="startCase()">
+      <span class="icon">🥊</span>
+      <div class="info">
+        <h3>来一个案例，我做判断</h3>
+        <p>真实决策场景，独立做判断，看三刀解剖你的盲区</p>
+      </div>
+      <span class="arrow">→</span>
+    </button>
+    <button class="mode-btn" onclick="showPage('page-review')">
+      <span class="icon">📖</span>
+      <div class="info">
+        <h3>勇气账复盘</h3>
+        <p>提交你的真实决策，回溯判断过程，识别盲点</p>
+      </div>
+      <span class="arrow">→</span>
+    </button>
+    <button class="mode-btn" onclick="showPage('page-log')">
+      <span class="icon">📊</span>
+      <div class="info">
+        <h3>训练记录</h3>
+        <p>看看你的判断模式进化轨迹</p>
+      </div>
+      <span class="arrow">→</span>
+    </button>
+  </div>
+  <div class="footer">
+    <p>署名：70后理工老登</p>
+  </div>
+</div>
+
+<!-- ========== 案例页 ========== -->
+<div class="page" id="page-case">
+  <div class="page-header">
+    <button class="back" onclick="showPage('page-home')">← 回训练场</button>
+    <h2>案例 #1</h2>
+    <p class="meta">技术决策 · 信息不完备 · 时间压力</p>
+  </div>
+  <div class="case-box">
+    <h3>你的AI系统突然全线401了</h3>
+    <p>周六下午。你的AI系统突然全线罢工。健康检查401，模型列表401，聊着天突然断了。你切到备用通道——同一个结果："Missing Authentication header"。</p>
+    <p>昨天还好好的。今天全崩了。你没有任何预警，没有任何变更记录。</p>
+    <div class="highlight">你的第一反应是什么？你从哪开始查？</div>
+    <p><span class="tag">约束条件</span> &nbsp;没有变更日志 · 没有监控报警 · 周末值班</p>
+  </div>
+  <div class="judge-area">
+    <label>① 你第一反应是哪里出了问题？</label>
+    <textarea id="judge-q1" placeholder="写你的第一反应，不用多想，写直觉的答案……"></textarea>
+  </div>
+  <div class="judge-area">
+    <label>② 你的排查路线是什么？先查什么，再查什么？</label>
+    <textarea id="judge-q2" placeholder="一步步写出来……"></textarea>
+  </div>
+  <div class="btn-center">
+    <button class="btn" onclick="submitJudgment()">提交判断，看对撞分析 →</button>
+  </div>
+</div>
+
+<!-- ========== 三刀对撞 ========== -->
+<div class="page" id="page-knives">
+  <div class="page-header">
+    <button class="back" onclick="showPage('page-case')">← 回到判断</button>
+    <h2>三刀对撞</h2>
+    <p class="meta">三把刀解剖同一个案例，你看看自己漏了什么</p>
+  </div>
+  <div class="knives" id="knives-container">
+    <!-- 时间折叠刀 -->
+    <div class="knife-card" id="knife1">
+      <div class="knife-header" onclick="toggleKnife('knife1')">
+        <span class="k-icon">🕐</span>
+        <div class="k-info">
+          <h4>时间折叠刀</h4>
+          <p>把决策拉伸到三个时间尺度看</p>
+        </div>
+        <span class="k-toggle">▾</span>
+      </div>
+      <div class="knife-body">
+        <p class="q">核心追问：你是不是在用"今天很急"的理由，做了一个"三个月后会后悔"的决定？</p>
+        <div class="divider"></div>
+        <p class="a"><strong>3天后。</strong> 查key是最容易的动作，但也是最无效的。三天后你会意识到：你花了一整个周末下午在查一个压根没问题的东西。</p>
+        <p class="a"><strong>3个月后。</strong> 你会忘记这次401的具体细节。但你不会忘记你顺手建了个管理场景这件事——那个十分钟建好的空场景，才是三个月后真正值钱的东西。</p>
+        <p class="a"><strong>3年后。</strong> 回头看，这次故障的价值不在于"修好了"，在于你养成了一个习惯：遇到系统问题，第一反应不是查具体原因，是先往管理场景走。</p>
+        <div class="divider"></div>
+        <p class="a" style="color:var(--accent);">如果三个月前的你预判到今天的局面，你会在哪里提前做一个小动作？</p>
+      </div>
+    </div>
+    <!-- 换位刀 -->
+    <div class="knife-card" id="knife2">
+      <div class="knife-header" onclick="toggleKnife('knife2')">
+        <span class="k-icon">🔄</span>
+        <div class="k-info">
+          <h4>换位刀</h4>
+          <p>坐到别人椅子上看同一个问题</p>
+        </div>
+        <span class="k-toggle">▾</span>
+      </div>
+      <div class="knife-body">
+        <p class="q">核心追问：如果你现在扮演的是你的反对者，你会怎么攻击你现在的判断？</p>
+        <div class="divider"></div>
+        <p class="a"><strong>换到你的执行者。</strong> 他会说：你每次都让我们在问题发生后才查原因，为什么不提前把监控、告警、巡检做好？</p>
+        <p class="a"><strong>换到你的上级。</strong> 他会说：401停了半天，你的恢复时间是多长？有没有预案？有没有人盯着？</p>
+        <p class="a"><strong>换到三个月后的你自己。</strong> 他会说：你要是三个月前就建了管理场景，今天根本不需要花半小时。那十分钟为什么不花？</p>
+        <div class="divider"></div>
+        <p class="a" style="color:var(--accent);">每个人的视角都指向同一个结论：前置决策比事后排查值钱。但你在出了事之前，往往不愿意花那十分钟。</p>
+      </div>
+    </div>
+    <!-- 反事实刀 -->
+    <div class="knife-card" id="knife3">
+      <div class="knife-header" onclick="toggleKnife('knife3')">
+        <span class="k-icon">⚡</span>
+        <div class="k-info">
+          <h4>反事实刀</h4>
+          <p>找到核心假设，然后推翻它</p>
+        </div>
+        <span class="k-toggle">▾</span>
+      </div>
+      <div class="knife-body">
+        <p class="q">核心追问：如果你的核心假设不成立，你的判断还站得住吗？</p>
+        <div class="divider"></div>
+        <p class="a"><strong>你的判断：</strong> 401 → API key有问题。</p>
+        <p class="a"><strong>核心假设：</strong> API key是唯一的认证入口。</p>
+        <p class="a"><strong>如果不成立：</strong> 事实上，你的请求在走到API key验证之前，已经被另一层（headroom代理）拦下来了。你查key的时候，根本不知道headroom存在。</p>
+        <div class="divider"></div>
+        <p class="a" style="color:var(--accent);">你在第一层假设上卡了半小时。而那个假设，从根上就错了。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-center">
+    <button class="btn btn-outline" onclick="showPage('page-perspectives')">看四个视角如何解剖同一案例 →</button>
+  </div>
+</div>
+
+<!-- ========== 视角展厅 ========== -->
+<div class="page" id="page-perspectives">
+  <div class="page-header">
+    <button class="back" onclick="showPage('page-knives')">← 回三刀对撞</button>
+    <h2>同一件事，四个讲法</h2>
+    <p class="meta">同一个案例，不同思维框架看到的完全不一样</p>
+  </div>
+  <div class="perspectives" id="perspectives-container">
+    <div class="persp-card" id="persp1">
+      <div class="persp-header" onclick="togglePersp('persp1')">
+        <span class="p-icon">🧠</span>
+        <div class="p-info">
+          <h4>姜胡说视角</h4>
+          <p>短句 · 自嘲 · "不是…是…" · 系统思维</p>
+        </div>
+        <span class="p-toggle">▾</span>
+      </div>
+      <div class="persp-body">
+        <p>「系统崩了。你第一反应是查key。</p>
+        <p>不是。不是key的问题。是你三个月前埋的一颗雷。</p>
+        <p>不是配置写错了。是配置层次太多了。</p>
+        <p>不是headroom的错。是它没有被管理的错。</p>
+        <p>系统里每一条隐形的线，都在等你忘了它的那一天。」</p>
+      </div>
+    </div>
+    <div class="persp-card" id="persp2">
+      <div class="persp-header" onclick="togglePersp('persp2')">
+        <span class="p-icon">🌱</span>
+        <div class="p-info">
+          <h4>朴素之道视角</h4>
+          <p>"懂了≠会了" · 学与习分离 · 微调正反馈</p>
+        </div>
+        <span class="p-toggle">▾</span>
+      </div>
+      <div class="persp-body">
+        <p>「三个月前你建了管理场景。你"懂"了——系统配置应该分场景。</p>
+        <p>但你的手没有"会"。出了事第一反应还是查key。</p>
+        <p>"懂"一万个道理，不如"会"一个动作。</p>
+        <p>微调一下：建一个空场景十分钟。养成切过去的习惯一次就够了。</p>
+        <p>不是技术问题。是认知问题。」</p>
+      </div>
+    </div>
+    <div class="persp-card" id="persp3">
+      <div class="persp-header" onclick="togglePersp('persp3')">
+        <span class="p-icon">🌪️</span>
+        <div class="p-info">
+          <h4>碧树西风视角</h4>
+          <p>展示式写作 · 类比打穿 · 墙里有根线</p>
+        </div>
+        <span class="p-toggle">▾</span>
+      </div>
+      <div class="persp-body">
+        <p>「你以为他排查能力强？</p>
+        <p>不是。是他三个月前在墙上贴了一张标签。</p>
+        <p>墙里的线三个月前就预埋好了。电工师傅顺手贴了张标签。</p>
+        <p>三个月后跳闸了。他打开弱电箱看到了标签。十分钟找到那根线。</p>
+        <p>不是你会不会修。是你知不知道去哪修。」</p>
+      </div>
+    </div>
+    <div class="persp-card" id="persp4">
+      <div class="persp-header" onclick="togglePersp('persp4')">
+        <span class="p-icon">🔥</span>
+        <div class="p-info">
+          <h4>卡兹克视角</h4>
+          <p>叙事启动 · 亲自下场 · 前置决策的蝴蝶效应</p>
+        </div>
+        <span class="p-toggle">▾</span>
+      </div>
+      <div class="persp-body">
+        <p>「故事是这样的。</p>
+        <p>你是不是觉得我排查能力强？</p>
+        <p>不是。真正有意思的不是我十分钟修好了。是三个月前我花三分钟建了一个空的场景。</p>
+        <p>建完我就忘了。三个月没用过。但它改变了我的默认动作。</p>
+        <p>想的不是今天的事。想的是三个月后的今天。」</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="review-box">
+    <h3>▎认知复盘</h3>
+    <p>现在回看你的判断——你在三把刀、四个视角里找到了几个你自己没想到的角度？</p>
+    <ul>
+      <li>你的第一反应是查key——这不是你的错，这是所有人的本能。真正的高手不是在查key这一步更快，是根本不在这一步停下。</li>
+      <li>你缺的不是排查技巧。你缺的是一个"出事了先到这里"的默认动作。</li>
+      <li>三个月前花十分钟建的东西，今天给你省了半天。</li>
+    </ul>
+    <div style="margin-top:24px;">
+      <p style="font-size:17px;color:var(--text-dim);">这是你的第一次训练。下一次，你的第一反应会变吗？</p>
+      <div style="margin-top:16px;">
+        <button class="btn btn-sm" onclick="saveRecord()">保存训练记录</button>
+        <button class="btn btn-sm btn-outline" style="margin-left:12px;" onclick="showPage('page-home')">再练一次</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 勇气账复盘（骨架） ========== -->
+<div class="page" id="page-review">
+  <div class="page-header">
+    <button class="back" onclick="showPage('page-home')">← 回训练场</button>
+    <h2>勇气账复盘</h2>
+    <p class="meta">提交一个你过去做过的真实决策</p>
+  </div>
+  <div class="judge-area">
+    <label>是什么决策？</label>
+    <textarea id="review-q1" placeholder="背景是什么？你面临什么选择？" style="min-height:80px;"></textarea>
+  </div>
+  <div class="judge-area">
+    <label>你选了哪个？为什么？</label>
+    <textarea id="review-q2" placeholder="你的判断依据是什么？"></textarea>
+  </div>
+  <div class="judge-area">
+    <label>结果如何？</label>
+    <textarea id="review-q3" placeholder="后来怎么样了？你判断对了还是偏了？" style="min-height:80px;"></textarea>
+  </div>
+  <div class="btn-center">
+    <button class="btn" onclick="saveReview()">保存到训练记录</button>
+  </div>
+  <div class="footer" style="margin-top:48px;">
+    <p style="color:var(--text-dim);font-size:16px;">记一笔勇气账，不是为了证明自己对了。是为了训练在不确定中做决策的肌肉。</p>
+  </div>
+</div>
+
+<!-- ========== 训练记录 ========== -->
+<div class="page" id="page-log">
+  <div class="page-header">
+    <button class="back" onclick="showPage('page-home')">← 回训练场</button>
+    <h2>训练记录</h2>
+    <p class="meta">你的判断模式进化轨迹</p>
+  </div>
+  <div id="log-empty" style="text-align:center;padding:80px 0;color:var(--text-dim);font-size:20px;">
+    <p>还没有训练记录。练完一次就有了。</p>
+    <div style="margin-top:24px;">
+      <button class="btn" onclick="startCase()">开始第一次训练</button>
+    </div>
+  </div>
+  <div id="log-list" style="display:none;"></div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ===== 页面切换 =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== 三刀折叠 =====
+function toggleKnife(id) {
+  document.getElementById(id).classList.toggle('expanded');
+}
+
+// ===== 视角折叠 =====
+function togglePersp(id) {
+  document.getElementById(id).classList.toggle('expanded');
+}
+
+// ===== 开始案例 =====
+function startCase() {
+  document.getElementById('judge-q1').value = '';
+  document.getElementById('judge-q2').value = '';
+  showPage('page-case');
+}
+
+// ===== 提交判断 =====
+function submitJudgment() {
+  const q1 = document.getElementById('judge-q1').value.trim();
+  const q2 = document.getElementById('judge-q2').value.trim();
+  if (!q1 && !q2) { alert('先做判断再进对撞——写下你的第一反应'); return; }
+  showPage('page-knives');
+  // 默认展开第一把刀
+  document.getElementById('knife1').classList.add('expanded');
+}
+
+// ===== 保存训练记录 =====
+function saveRecord() {
+  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
+  const record = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString('zh-CN'),
+    type: '案例格斗 #1',
+    note: 'API全线401 · 判断力训练'
+  };
+  records.push(record);
+  localStorage.setItem('judgment-arena-records', JSON.stringify(records));
+  showPage('page-log');
+  renderLog();
+}
+
+function saveReview() {
+  const q1 = document.getElementById('review-q1').value.trim();
+  const q2 = document.getElementById('review-q2').value.trim();
+  const q3 = document.getElementById('review-q3').value.trim();
+  if (!q1 || !q2 || !q3) { alert('请填写完整的决策信息'); return; }
+  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
+  records.push({
+    id: Date.now(),
+    date: new Date().toLocaleDateString('zh-CN'),
+    type: '勇气账复盘',
+    note: q1.substring(0, 50) + (q1.length > 50 ? '…' : '')
+  });
+  localStorage.setItem('judgment-arena-records', JSON.stringify(records));
+  document.getElementById('review-q1').value = '';
+  document.getElementById('review-q2').value = '';
+  document.getElementById('review-q3').value = '';
+  showPage('page-log');
+  renderLog();
+}
+
+function renderLog() {
+  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
+  const el = document.getElementById('log-list');
+  const empty = document.getElementById('log-empty');
+  if (records.length === 0) {
+    el.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  el.style.display = 'block';
+
+  // 三阶段计算
+  const phase = records.length <= 7 ? 1 : records.length <= 14 ? 2 : 3;
+  const phaseNames = {1: '看见（第1-7次）', 2: '理解（第8-14次）', 3: '内化（第15-21次）'};
+  const progressPct = Math.min(100, Math.round((records.length / 21) * 100));
+  const halfIdx = Math.floor(records.length / 2);
+
+  let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+
+  // 训练统计看板
+  html += `<div class="case-box" style="margin-bottom:24px;">
+    <h3 style="font-size:24px;margin-bottom:16px;">训练统计</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:var(--bg-card);padding:16px;border-radius:8px;text-align:center;">
+        <div style="font-size:36px;font-weight:700;color:var(--accent);">${records.length}</div>
+        <div style="font-size:15px;color:var(--text-dim);">总训练次数</div>
+      </div>
+      <div style="background:var(--bg-card);padding:16px;border-radius:8px;text-align:center;">
+        <div style="font-size:36px;font-weight:700;color:var(--accent);">${progressPct}%</div>
+        <div style="font-size:15px;color:var(--text-dim);">21天完成度</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:15px;color:var(--text-dim);">当前阶段</span>
+        <span style="font-size:15px;color:var(--accent);">${phaseNames[phase]}</span>
+      </div>
+      <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;">
+        <div style="background:var(--accent);height:100%;width:${progressPct}%;border-radius:3px;"></div>
+      </div>
+    </div>
+  </div>`;
+  // 倒序排列
+  [...records].reverse().forEach(r => {
+    html += `<div class="case-box" style="padding:20px 28px;display:flex;align-items:center;gap:16px;">
+      <span style="font-size:24px;">${r.type === '案例格斗 #1' ? '🥊' : '📖'}</span>
+      <div style="flex:1;">
+        <div style="font-size:18px;font-weight:600;">${r.type}</div>
+        <div style="font-size:15px;color:var(--text-dim);">${r.note}</div>
+      </div>
+      <span style="font-size:14px;color:var(--text-dim);">${r.date}</span>
+    </div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ===== 初始化 =====
+renderLog();
+
+// 首页进度条
+function updateHomeProgress() {
+  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
+  const el = document.getElementById('phase-progress');
+  if (records.length === 0) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  const phase = records.length <= 7 ? 1 : records.length <= 14 ? 2 : 3;
+  const phaseNames = {1: '阶段一：看见', 2: '阶段二：理解', 3: '阶段三：内化'};
+  const pct = Math.min(100, Math.round((records.length / 21) * 100));
+  document.getElementById('phase-label').textContent = phaseNames[phase];
+  document.getElementById('progress-bar-fill').style.width = pct + '%';
+  document.getElementById('progress-count').textContent = records.length + ' / 21 次';
+  document.getElementById('progress-percent').textContent = pct + '%';
+}
+updateHomeProgress();
+</script>
+</body>
+</html>
