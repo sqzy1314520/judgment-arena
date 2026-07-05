@@ -152,21 +152,32 @@ python scripts/judgment.py trends    # 盲区趋势（JSON格式）
 
 完整的诞生记录见 `docs/birth-of-a-tool.md`。
 
+### 案例是怎么来的
+
+内置的15个案例，全部由 **案例自生长引擎**（cognitive-case-template.md）驱动生产。引擎定义了4种生活原型与认知框架的映射关系——安全vs成长→认知主权、人情vs利害→决策框架、需要vs想要→第一性原理、花钱买安心→锋刃标准——框架的每个维度自动投射到三刀和追问上，场景换一层皮，框架不变。
+
+**外部用户提交勇气账复盘时，引擎会自动为你生成结构化案例**——你只需描述你的困境，系统自动识别原型、匹配框架、生成三刀追问。不需要阅读认知主权/决策框架/第一性原理的任何原文。引擎模板（references/cognitive-case-template.md）已提取了框架的DNA。十几页的思维体系文档不打包进SKILL，但引擎让它们的思维内核在每一次案例生产中自动运行。新的结构化案例存于 `case-library/user-cases/`，后续训练自动加载。
+
 ## 文件结构
 
 ```
 judgment-arena/
-├── SKILL.md                  # 主设计文档（Hermes可调度）
+├── SKILL.md                       # 主设计文档（Hermes可调度）
 ├── scripts/
-│   └── judgment.py           # 状态管理器（纯Python，零依赖）
+│   └── judgment.py                # 状态管理器（纯Python，零依赖）
 ├── html/
-│   └── index.html            # 交互式入口（浏览器打开即用）
+│   └── index.html                 # 交互式入口（浏览器打开即用）
+├── case-library/
+│   ├── case-*.json                # 15个普遍性案例（含认知框架溯源）
+│   ├── cases-index.json           # 案例索引
+│   └── user-cases/                # 勇气账复盘生成的用户案例
 ├── references/
-│   ├── theory-manifesto.md   # 理论宣言
-│   ├── design-four-questions.md  # 底层设计四问
-│   └── adversarial-review.md # 对抗性自检
+│   ├── cognitive-case-template.md # 案例自生长引擎（框架×原型映射）
+│   ├── theory-manifesto.md        # 理论宣言
+│   ├── design-four-questions.md   # 底层设计四问
+│   └── adversarial-review.md      # 对抗性自检
 ├── docs/
-│   └── birth-of-a-tool.md    # 工具的诞生（背景故事）
+│   └── birth-of-a-tool.md         # 工具的诞生（背景故事）
 └── LICENSE
 ```
 
