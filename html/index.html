@@ -352,6 +352,11 @@ body {
       </div>
       <span class="arrow">→</span>
     </button>
+    <div style="margin: -8px 0 16px 72px; display: flex; gap: 12px; align-items: center;">
+      <span style="font-size:15px;color:var(--text-dim);">模式：</span>
+      <button id="mode-fast" class="btn-sm btn-outline" style="background:var(--accent);color:#0c0c0e;border:none;">快速(~5分钟)</button>
+      <button id="mode-standard" class="btn-sm btn-outline" style="border:1px solid var(--accent-dim);color:var(--accent);">标准(~15分钟)</button>
+    </div>
     <button class="mode-btn" onclick="showPage('page-review')">
       <span class="icon">📖</span>
       <div class="info">
@@ -744,6 +749,41 @@ function renderLog() {
   html += '</div>';
   el.innerHTML = html;
 }
+
+// ===== 模式切换 =====
+let currentMode = 'fast';
+document.getElementById('mode-fast').addEventListener('click', function() {
+  currentMode = 'fast';
+  this.style.background = 'var(--accent)';
+  this.style.color = '#0c0c0e';
+  this.style.border = 'none';
+  document.getElementById('mode-standard').style.background = 'transparent';
+  document.getElementById('mode-standard').style.color = 'var(--accent)';
+  document.getElementById('mode-standard').style.border = '1px solid var(--accent-dim)';
+});
+document.getElementById('mode-standard').addEventListener('click', function() {
+  currentMode = 'standard';
+  this.style.background = 'var(--accent)';
+  this.style.color = '#0c0c0e';
+  this.style.border = 'none';
+  document.getElementById('mode-fast').style.background = 'transparent';
+  document.getElementById('mode-fast').style.color = 'var(--accent)';
+  document.getElementById('mode-fast').style.border = '1px solid var(--accent-dim)';
+});
+
+// override submitJudgment to show mode
+const origSubmit = submitJudgment;
+submitJudgment = function() {
+  const modeLabel = currentMode === 'fast' ? '快速模式' : '标准模式';
+  const knives = document.getElementById('knives-container');
+  if (currentMode === 'fast') {
+    // 快速模式只保留第一把刀
+    document.getElementById('knife2').style.display = 'none';
+    document.getElementById('knife3').style.display = 'none';
+    document.getElementById('perspectives-container').style.display = 'none';
+  }
+  origSubmit();
+};
 
 // ===== 初始化 =====
 renderLog();
