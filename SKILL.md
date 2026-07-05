@@ -214,6 +214,9 @@ AI平权了信息处理能力之后，个体的不可替代性不在于知道多
 2. 教练回溯你的判断过程（当时的假设？考虑了什么？忽略了什么？）
 3. 三刀复盘（如果当时会用三刀，会看到什么？）
 4. 改进点输出 → 记入训练记录
+5. 【案例化】（新增）教练问：这个决策很有代表性，要不要存为训练案例？
+   → 用户说好 → 自动转换成标准案例JSON → 写入 user-cases/ 目录
+   → 后续训练自动加载，案例库越用越厚
 ```
 
 ### 模式三：判断压力场（待开发）
@@ -224,7 +227,7 @@ AI平权了信息处理能力之后，个体的不可替代性不在于知道多
 
 ### 刀一：时间折叠刀
 
-把判断拉伸到三个时间尺度：
+把判断拉伸到三个时间尺度。每尺度的分析按五段结构展开（选关键的2-3个即可，不用每次全写）：**条件 → 收益 → 风险 → 演化 → 失败点**
 
 | 尺度 | 问的问题 |
 |:-----|:---------|
@@ -440,11 +443,14 @@ companion script（状态管理）：
 | references/theory-manifesto.md | references/theory-manifesto.md | 理论宣言——判断力训练设计依据 |
 | references/design-four-questions.md | references/design-four-questions.md | 底层设计四问 |
 | references/adversarial-review.md | references/adversarial-review.md | 对抗性自检——7个攻击点 |
-| judgment-arena.html | D:\Hermes\recreation\product\judgment-arena.html | 交互式HTML入口（无后端） |
+| references/absorb-thinking-coach.md | references/absorb-thinking-coach.md | thinking-coach设计吸收分析 |
+| references/case-format-v1.md | references/case-format-v1.md | 案例标准格式定义 |
+| case-library/ | case-library/ | 案例库（技术+管理双案例就绪） |
 
 ## 版本记录
 
 | 版本 | 日期 | 变更 |
 |:----|:----|:------|
 | 1.0.0 | 2026-07-04 | 初始设计：三把刀 + 21天三阶段 + coach定位 |
-| 2.0.0 | 2026-07-04 | 完整封装：嵌入三个知识体系（CFAR/JDM/NDM）、圆桌对撞（从静态分析升级为辩论）、苏格拉底追问（五类追问）、交互式HTML入口、companion script |
+| 2.0.0 | 2026-07-04 | 完整封装：嵌入三个知识体系（CFAR/JDM/NDM）、圆桌对撞、苏格拉底追问、交互式HTML入口、companion script |
+| 2.1.0 | 2026-07-05 | 吸收thinking-coach:双模式+流程控制+案例-模型绑定；案例标准格式v1+双案例就绪 |
