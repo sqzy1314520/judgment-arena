@@ -110,7 +110,18 @@ textarea:focus{outline:none;border-color:var(--gold-dim)}
 /* Disclaimer banner */
 .disclaimer-banner{background:rgba(212,168,83,.08);border:1px solid var(--gold-dim);border-radius:0;padding:10px 24px;font-size:.82rem;color:var(--gold);line-height:1.6;text-align:center}
 .disclaimer-banner strong{color:var(--text)}
-.text-center{text-align:center}
+/* API bar */
+.api-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 24px}
+.api-bar-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.api-status{font-size:.78rem;padding:2px 8px;border-radius:10px;background:rgba(192,57,43,.15);color:var(--red)}
+.api-status.live{background:rgba(39,174,96,.15);color:var(--green)}
+.api-hint{font-size:.75rem;color:var(--text-muted);flex:1;min-width:100px}
+.api-input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:4px 8px;font-size:.78rem;width:240px;font-family:monospace}
+.api-input:focus{outline:none;border-color:var(--gold-dim)}
+/* Loading spinner */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--text-muted);border-top-color:var(--gold);border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Helper */
 .mt-8{margin-top:8px}
 .mt-16{margin-top:16px}
 .mb-8{margin-bottom:8px}
@@ -133,10 +144,17 @@ textarea:focus{outline:none;border-color:var(--gold-dim)}
 </div>
 
 <div class="disclaimer-banner">
-  <strong>📌 关于本页面的说明：</strong>
-  这是一个自助练习工具。案例和追问都是预设的，你写任何判断看到的分析都一样。
-  <strong>真正的判断力训练（三刀会针对你的具体判断回应、追问会从你的回答里长出来）</strong>
-  需要通过对话完成。如果你想要完整的训练体验，请在对话中告诉我「开始训练」。
+  <strong>📌 两种模式：</strong>
+  配置 DeepSeek API Key（顶栏输入）→ <strong>实时教练模式</strong>，三刀追问针对你的判断实时生成。
+  不配置 Key → 自助练习模式，使用预设案例和追问。推荐先练1-2次感受流程，再配Key体验完整训练。
+</div>
+<div class="api-bar">
+  <div class="api-bar-inner">
+    <span class="api-status" id="apiStatus">🔒 离线模式</span>
+    <span class="api-hint">配置 DeepSeek API Key 启用实时教练模式</span>
+    <input class="api-input" id="apiKeyInput" type="password" placeholder="sk-..." value="">
+    <button class="btn btn-sm" id="apiToggleBtn" onclick="toggleAPIMode()">启用</button>
+  </div>
 </div>
 
 <div class="container" id="app">
@@ -1813,6 +1831,277 @@ function clearAllData() {
 
 // ─── Init ──────────────────────────────────────
 updateProgress();
+
+// ─── API Mode ──────────────────────────────────
+let deepseekKey = localStorage.getItem('deepseek_key') || '';
+
+function initAPIMode() {
+  if (deepseekKey) {
+    document.getElementById('apiKeyInput').value = '••••' + deepseekKey.slice(-8);
+    document.getElementById('apiStatus').textContent = '🟢 实时教练';
+    document.getElementById('apiStatus').classList.add('live');
+    document.getElementById('apiToggleBtn').textContent = '切换';
+  }
+}
+
+function toggleAPIMode() {
+  let input = document.getElementById('apiKeyInput');
+  let key = input.value.trim();
+  
+  if (key.startsWith('••••')) {
+    // Already set, toggle off
+    deepseekKey = '';
+    localStorage.removeItem('deepseek_key');
+    document.getElementById('apiStatus').textContent = '🔒 离线模式';
+    document.getElementById('apiStatus').classList.remove('live');
+    document.getElementById('apiToggleBtn').textContent = '启用';
+    input.value = '';
+    return;
+  }
+  
+  if (!key && !deepseekKey) return;
+  
+  if (!key && deepseekKey) {
+    // Already have key, just update status
+    return;
+  }
+  
+  deepseekKey = key;
+  localStorage.setItem('deepseek_key', key);
+  document.getElementById('apiStatus').textContent = '🟢 实时教练';
+  document.getElementById('apiStatus').classList.add('live');
+  document.getElementById('apiToggleBtn').textContent = '切换';
+  input.value = '••••' + key.slice(-8);
+}
+
+// ─── DeepSeek API ─────────────────────────────
+async function callDS(knivesPrompt) {
+  if (!deepseekKey) return null;
+  try {
+    let res = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+deepseekKey},
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [{role:'user', content: knivesPrompt}],
+        temperature: 0.7, max_tokens: 2000
+      })
+    });
+    let data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.choices[0].message.content;
+  } catch(e) {
+    console.error('DeepSeek API error:', e);
+    return null;
+  }
+}
+
+function buildKnivesPrompt(c, judgment) {
+  let s = c.scenario;
+  return `你是一个判断力训练教练，正在分析用户对一个决策案例的判断。
+
+【案例类型】${c.prototype}
+【认知框架】${c.cognitive_frame}
+【案例背景】${s.background || ''}
+
+【用户的判断】
+${judgment}
+
+请针对这个具体的判断，生成三把刀的分析。每把刀一段话（中文，2-4句），必须直接回应用户判断里的具体条件。
+
+1. 时间折叠人：短期(3天)、中期(3月)、长期(3年)这个判断分别会面对什么？用户判断里哪些条件可能会随时间变化？
+2. 换位者：用户站在谁的立场思考？换个角色（老板/执行者/反对者）会看到什么不同？
+3. 反事实者：用户的判断依赖了什么没说出来的假设？如果这个假设不成立，判断还站得住吗？`;
+}
+
+function buildSocraticPrompt(c, judgment, prevQA) {
+  let s = c.scenario;
+  return `你是一个苏格拉底式追问教练。用户刚刚完成了一个判断训练。
+
+【案例类型】${c.prototype}
+【案例背景】${(s.background || '').slice(0, 200)}
+【用户的判断】${judgment}
+${prevQA ? '【之前的对话】\n' + prevQA : ''}
+
+请从以下五种追问类型中选一个最针对用户当前思维盲区的，生成下一个问题：
+A. 澄清 — 概念模糊或偷换了什么定义？
+B. 假设检验 — 依赖了什么没说的前提？
+C. 证据检验 — 判断有真实的依据吗？有没有被忽略的反面证据？
+D. 视角转换 — 只看了自己的角度？如果换成另一方会怎样？
+E. 后果追踪 — 有没有推到最终可能发生的后果？
+
+要求：一次只问一个问题。直接、口语化、中文。不用标注类型。`;
+}
+
+// ─── Live Knives Generation ───────────────────
+async function submitAndGenerate() {
+  let judgment = document.getElementById('judgmentInput').value.trim();
+  if (judgment.length < 2) return;
+  state.judgment = judgment;
+  
+  // Show loading
+  document.getElementById('knivesContainer').innerHTML = 
+    `<div style="text-align:center;padding:40px"><span class="spinner"></span>正在分析你的判断...</div>`;
+  showPhase('knives');
+  document.getElementById('knivesDone').classList.add('hidden');
+  
+  let c = state.currentCase;
+  let prompt = buildKnivesPrompt(c, judgment);
+  let result = await callDS(prompt);
+  
+  if (result) {
+    // Parse the AI response into knife panels
+    renderLiveKnives(result);
+  } else {
+    // Fallback to static
+    renderKnives();
+  }
+  document.getElementById('knivesDone').classList.remove('hidden');
+}
+
+function renderLiveKnives(text) {
+  let sections = text.split(/\d\.\s+/).filter(Boolean);
+  let names = ['🥊 时间折叠人', '🔄 换位者', '⚡ 反事实者'];
+  let icons = ['短期/中期/长期', '老板/执行者/反对者', '假设检验'];
+  let html = '';
+  
+  sections.forEach((sec, i) => {
+    if (i >= 3) return;
+    let content = sec.replace(/^[：: ]*/, '').trim();
+    html += `<div class="knife-panel">
+      <div class="knife-header" onclick="toggleKnife(this)">
+        <span><span class="name">${names[i] || '分析'}</span> <span style="font-size:.75rem;color:var(--text-muted)">${icons[i] || ''}</span></span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="knife-body">
+        <p>${content.replace(/\n/g, '</p><p>')}</p>
+      </div>
+    </div>`;
+  });
+  
+  if (!html) {
+    html = `<div class="knife-panel"><div class="knife-body" style="display:block"><p>${text}</p></div></div>`;
+  }
+  
+  document.getElementById('knivesContainer').innerHTML = html;
+  // Auto-open first knife
+  let first = document.querySelector('.knife-panel');
+  if (first) {
+    first.querySelector('.knife-header').classList.add('open');
+    first.querySelector('.knife-body').classList.add('open');
+  }
+}
+
+// ─── Live Socratic ────────────────────────────
+async function startLiveSocratic() {
+  let c = state.currentCase;
+  if (!c) return;
+  
+  state.socraticAnswers = [];
+  state.socraticQA = [];
+  
+  let firstPrompt = buildSocraticPrompt(c, state.judgment, '');
+  let result = await callDS(firstPrompt);
+  renderLiveSocraticQ(result || '你做出这个判断，最核心的依据是什么？');
+}
+
+async function renderLiveSocraticQ(questionText) {
+  let container = document.getElementById('socraticContainer');
+  container.innerHTML = `
+    <div class="socratic-question">
+      <span class="q-type">追问</span>
+      <div class="q-text">${questionText}</div>
+      <div class="textarea-block">
+        <label>你的回答</label>
+        <textarea id="socraticAnswer" rows="3" placeholder="想清楚再写..."></textarea>
+      </div>
+      <button class="btn btn-primary" id="submitSocraticBtn" onclick="submitLiveSocratic()" disabled>提交回答</button>
+      <div class="q-response" id="socraticResponse"></div>
+    </div>
+  `;
+  document.getElementById('submitSocraticBtn').disabled = true;
+  document.getElementById('socraticAnswer').addEventListener('input', function() {
+    document.getElementById('submitSocraticBtn').disabled = this.value.trim().length < 1;
+  });
+  document.getElementById('socraticAnswer').focus();
+  
+  // Store current question for QA tracking
+  state._lastQuestion = questionText;
+}
+
+async function submitLiveSocratic() {
+  let answer = document.getElementById('socraticAnswer').value.trim();
+  if (!answer) return;
+  
+  state.socraticAnswers.push(answer);
+  state.socraticQA.push({q: state._lastQuestion, a: answer});
+  
+  let response = document.getElementById('socraticResponse');
+  response.style.display = 'block';
+  response.innerHTML = '<em>已记录，正在生成下一个追问...</em><span class="spinner"></span>';
+  
+  document.getElementById('submitSocraticBtn').disabled = true;
+  document.getElementById('socraticAnswer').disabled = true;
+  
+  // Check if we've done enough rounds (3-4)
+  if (state.socraticAnswers.length >= 4) {
+    setTimeout(() => showPhase('review') || renderReview(), 800);
+    return;
+  }
+  
+  // Generate next question
+  let c = state.currentCase;
+  let qaHistory = state.socraticQA.map(x => '问：' + x.q + '\n答：' + x.a).join('\n\n');
+  let nextPrompt = buildSocraticPrompt(c, state.judgment, qaHistory);
+  let nextQ = await callDS(nextPrompt);
+  
+  if (nextQ) {
+    setTimeout(() => renderLiveSocraticQ(nextQ), 1200);
+  } else {
+    setTimeout(() => showPhase('review') || renderReview(), 800);
+  }
+}
+
+// ─── Patch submitJudgment for live ────────────
+let _origSubmit = window.submitJudgment;
+window.submitJudgment = function() {
+  if (deepseekKey) {
+    submitAndGenerate();
+  } else {
+    // Fallback to static
+    state.judgment = document.getElementById('judgmentInput').value.trim();
+    if (state.judgment.length < 2) return;
+    renderKnives();
+    showPhase('knives');
+  }
+};
+
+let _origSocratic = window.startSocratic;
+window.startSocratic = function() {
+  if (deepseekKey && state.socraticAnswers.length === 0) {
+    startLiveSocratic();
+  } else if (deepseekKey && state.socraticAnswers.length > 0) {
+    // Resume live mode
+    let c = state.currentCase;
+    let qaHistory = state.socraticQA.map(x => '问：' + x.q + '\n答：' + x.a).join('\n\n');
+    buildSocraticPrompt(c, state.judgment, qaHistory).then(p => callDS(p)).then(q => {
+      renderLiveSocraticQ(q || '你觉得你的判断里，最不确定的因素是什么？');
+    });
+  } else {
+    // Static mode
+    let c = state.currentCase;
+    if (!c || !c.socratic_questions) return;
+    let qKeys = ['clarify','hypothesis','evidence','perspective','consequence'];
+    let qLabels = {clarify:'澄清', hypothesis:'假设检验', evidence:'证据检验', perspective:'视角转换', consequence:'后果追踪'};
+    let questions = qKeys.filter(k => c.socratic_questions[k]).map(k => ({key:k, label:qLabels[k], text:c.socratic_questions[k]}));
+    state.socraticQuestions = questions.slice(0,4);
+    state.socraticIndex = 0;
+    state.socraticAnswers = [];
+    renderSocraticQuestion(0);
+  }
+};
+
+initAPIMode();
 </script>
 </body>
 </html>
