@@ -5,804 +5,645 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>判断力格斗场 · Judgment Arena</title>
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #0c0c0e;
-  --bg-card: #16161a;
-  --bg-card-hover: #1e1e24;
-  --text: #e8e6e3;
-  --text-dim: #8a8a8a;
-  --accent: #d4a853;
-  --accent-dim: #a07830;
-  --border: #2a2a30;
-  --gold: #f0c040;
-  --red: #c0392b;
-  --green: #27ae60;
-}
-html { font-size: 16px; }
-body {
-  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-.container { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0c;--bg2:#121214;--bg3:#1a1a20;--card:#1e1e24;--card-hover:#282830;--text:#e8e6e3;--text-dim:#787880;--text-muted:#585860;--gold:#d4a853;--gold-dim:#a07830;--red:#c0392b;--green:#27ae60;--blue:#4a7ec0;--border:#2a2a32;--radius:8px;--shadow:0 2px 12px rgba(0,0,0,.3)}
+html{font-size:15px}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:var(--gold);text-decoration:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg3)}::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:3px}
 
-/* ===== 首页 ===== */
-.hero { text-align: center; padding: 80px 0 48px; }
-.hero-badge {
-  display: inline-block;
-  border: 1px solid var(--accent-dim);
-  color: var(--accent);
-  font-size: 14px;
-  padding: 6px 18px;
-  border-radius: 4px;
-  letter-spacing: 3px;
-  margin-bottom: 32px;
-}
-.hero h1 {
-  font-size: 72px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  line-height: 1.15;
-  margin-bottom: 16px;
-}
-.hero h1 .accent { color: var(--accent); }
-.hero .sub {
-  font-size: 22px;
-  color: var(--text-dim);
-  margin-bottom: 56px;
-}
-.hero .tagline {
-  font-size: 28px;
-  color: var(--text);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 24px 0;
-  margin-bottom: 48px;
-  line-height: 1.5;
-}
+/* Header */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 24px;position:sticky;top:0;z-index:100}
+.header-inner{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.header h1{font-size:1.3rem;color:var(--gold);letter-spacing:2px}
+.header h1 span{color:var(--text-dim);font-size:.85rem;margin-left:8px}
+.header-actions{display:flex;gap:8px}
+.btn{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:8px 16px;border-radius:var(--radius);cursor:pointer;font-size:.85rem;transition:.2s}
+.btn:hover{background:var(--card-hover);border-color:var(--gold-dim)}
+.btn-primary{background:var(--gold-dim);color:#fff;border-color:var(--gold)}
+.btn-primary:hover{background:var(--gold)}
+.btn-sm{padding:4px 12px;font-size:.8rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* ===== 模式选择 ===== */
-.modes { display: flex; flex-direction: column; gap: 16px; }
-.mode-btn {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 28px 32px;
-  cursor: pointer;
-  transition: all .25s;
-  text-align: left;
-  width: 100%;
-  font-family: inherit;
-  color: var(--text);
-}
-.mode-btn:hover { background: var(--bg-card-hover); border-color: var(--accent-dim); }
-.mode-btn .icon { font-size: 40px; flex-shrink: 0; }
-.mode-btn .info h3 { font-size: 26px; font-weight: 600; margin-bottom: 4px; }
-.mode-btn .info p { font-size: 17px; color: var(--text-dim); line-height: 1.5; }
-.mode-btn .arrow { margin-left: auto; font-size: 24px; color: var(--accent-dim); }
+/* Container */
+.container{max-width:1000px;margin:0 auto;padding:24px}
 
-/* ===== 页面通用 ===== */
-.page { display: none; }
-.page.active { display: block; }
-.page-header { margin-bottom: 48px; }
-.page-header .back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 24px;
-  border: none;
-  background: none;
-  font-family: inherit;
-  transition: color .2s;
-}
-.page-header .back:hover { color: var(--accent); }
-.page-header h2 {
-  font-size: 52px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 12px;
-}
-.page-header .meta { font-size: 18px; color: var(--text-dim); }
+/* Progress bar */
+.progress-bar{background:var(--bg3);border-radius:20px;height:8px;margin:12px 0 4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:20px;transition:width .5s}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-dim)}
 
-/* ===== 案例区 ===== */
-.case-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 36px 40px;
-  margin-bottom: 32px;
-}
-.case-box h3 { font-size: 28px; font-weight: 600; margin-bottom: 20px; }
-.case-box p { font-size: 18px; line-height: 1.8; margin-bottom: 16px; }
-.case-box p:last-child { margin-bottom: 0; }
-.case-box .highlight {
-  border-left: 3px solid var(--accent);
-  padding-left: 20px;
-  color: var(--accent);
-  font-size: 18px;
-  margin: 20px 0;
-}
-.tag {
-  display: inline-block;
-  background: rgba(212,168,83,0.12);
-  color: var(--accent);
-  font-size: 13px;
-  padding: 3px 12px;
-  border-radius: 4px;
-  letter-spacing: .5px;
-}
+/* Phase badge */
+.phase-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.75rem;font-weight:600}
+.phase-see{background:rgba(212,168,83,.15);color:var(--gold)}
+.phase-understand{background:rgba(74,126,192,.15);color:var(--blue)}
+.phase-internalize{background:rgba(39,174,96,.15);color:var(--green)}
 
-/* ===== 判断输入 ===== */
-.judge-area { margin-bottom: 32px; }
-.judge-area label {
-  display: block;
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-.judge-area textarea {
-  width: 100%;
-  min-height: 120px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 18px;
-  font-family: inherit;
-  line-height: 1.7;
-  padding: 20px;
-  resize: vertical;
-  transition: border-color .2s;
-}
-.judge-area textarea:focus { outline: none; border-color: var(--accent-dim); }
-.judge-area .hint { font-size: 15px; color: var(--text-dim); margin-top: 8px; }
+/* Case grid */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.filter-btn{padding:4px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-size:.8rem;transition:.2s}
+.filter-btn:hover{border-color:var(--gold-dim);color:var(--text)}
+.filter-btn.active{background:var(--gold-dim);color:#fff;border-color:var(--gold)}
+.case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.case-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:.2s}
+.case-card:hover{background:var(--card-hover);border-color:var(--gold-dim);transform:translateY(-1px)}
+.case-card.done{border-left:3px solid var(--green)}
+.case-card .tag{display:inline-block;padding:1px 8px;border-radius:10px;background:rgba(212,168,83,.1);color:var(--gold-dim);font-size:.7rem;margin-bottom:6px}
+.case-card h3{font-size:.95rem;margin-bottom:4px;color:var(--text)}
+.case-card p{font-size:.8rem;color:var(--text-dim);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.case-card .check{color:var(--green);float:right}
 
-/* ===== 按钮 ===== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--accent);
-  color: #0c0c0e;
-  border: none;
-  border-radius: 8px;
-  padding: 16px 36px;
-  font-size: 20px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all .2s;
-}
-.btn:hover { background: var(--gold); transform: translateY(-1px); }
-.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-.btn-outline {
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent-dim);
-}
-.btn-outline:hover { background: rgba(212,168,83,0.1); }
-.btn-sm { padding: 10px 22px; font-size: 16px; }
-.btn-center { display: flex; justify-content: center; margin: 32px 0; }
+/* Phases */
+.phase-section{display:none;animation:fadeIn .3s}
+.phase-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* ===== 三刀展示 ===== */
-.knives { display: flex; flex-direction: column; gap: 20px; margin-bottom: 48px; }
-.knife-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: border-color .2s;
-}
-.knife-card.expanded { border-color: var(--accent-dim); }
-.knife-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 24px 32px;
-  cursor: pointer;
-  user-select: none;
-}
-.knife-header:hover { background: var(--bg-card-hover); }
-.knife-header .k-icon { font-size: 28px; flex-shrink: 0; }
-.knife-header .k-info { flex: 1; }
-.knife-header .k-info h4 { font-size: 22px; font-weight: 600; }
-.knife-header .k-info p { font-size: 15px; color: var(--text-dim); }
-.knife-header .k-toggle { font-size: 18px; color: var(--text-dim); transition: transform .3s; }
-.knife-card.expanded .k-toggle { transform: rotate(180deg); }
-.knife-body { display: none; padding: 0 32px 28px; }
-.knife-card.expanded .knife-body { display: block; }
-.knife-body .q {
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
-.knife-body .a {
-  font-size: 17px;
-  line-height: 1.8;
-  color: var(--text);
-}
-.knife-body .divider { height: 1px; background: var(--border); margin: 16px 0; }
+/* Scenario */
+.scenario-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;line-height:1.8}
+.scenario-box h2{font-size:1.2rem;color:var(--gold);margin-bottom:12px}
+.scenario-box h3{font-size:.95rem;color:var(--text-dim);margin:12px 0 6px}
+.scenario-box ul{padding-left:16px;font-size:.85rem;color:var(--text-dim)}
+.scenario-box li{margin-bottom:4px}
+.constraint-badge{display:inline-block;padding:2px 8px;border-radius:10px;background:rgba(192,57,43,.1);color:var(--red);font-size:.75rem;margin:2px}
 
-/* ===== 视角展示 ===== */
-.perspectives { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
-.persp-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.persp-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px 32px;
-  cursor: pointer;
-}
-.persp-header:hover { background: var(--bg-card-hover); }
-.persp-header .p-icon { font-size: 24px; }
-.persp-header .p-info h4 { font-size: 20px; font-weight: 600; }
-.persp-header .p-info p { font-size: 14px; color: var(--text-dim); }
-.persp-header .p-toggle { margin-left: auto; font-size: 16px; color: var(--text-dim); transition: transform .3s; }
-.persp-card.expanded .p-toggle { transform: rotate(180deg); }
-.persp-body { display: none; padding: 0 32px 28px; }
-.persp-card.expanded .persp-body { display: block; }
-.persp-body p { font-size: 17px; line-height: 1.8; margin-bottom: 12px; }
+/* Textarea */
+.textarea-block{margin:16px 0}
+.textarea-block label{display:block;font-size:.85rem;color:var(--text-dim);margin-bottom:6px}
+textarea{width:100%;min-height:100px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:12px;font-size:.9rem;font-family:inherit;line-height:1.6;resize:vertical}
+textarea:focus{outline:none;border-color:var(--gold-dim)}
+.input-field{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:10px 12px;font-size:.9rem;font-family:inherit}
+.input-field:focus{outline:none;border-color:var(--gold-dim)}
 
-/* ===== 复盘区 ===== */
-.review-box {
-  background: var(--bg-card);
-  border: 1px solid var(--gold);
-  border-radius: 12px;
-  padding: 36px 40px;
-  margin: 32px 0;
-}
-.review-box h3 {
-  font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: var(--gold);
-}
-.review-box p { font-size: 18px; line-height: 1.8; margin-bottom: 12px; }
-.review-box ul { list-style: none; padding: 0; }
-.review-box li {
-  font-size: 18px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  line-height: 1.6;
-}
-.review-box li:last-child { border: none; }
-.review-box li::before { content: "→ "; color: var(--accent); }
+/* Knives */
+.knife-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.knife-header{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:.2s;user-select:none}
+.knife-header:hover{background:var(--card-hover)}
+.knife-header .name{font-weight:600;font-size:.95rem}
+.knife-header .arrow{transition:transform .3s;color:var(--text-dim);font-size:.8rem}
+.knife-header.open .arrow{transform:rotate(180deg)}
+.knife-body{display:none;padding:0 18px 18px;font-size:.88rem;line-height:1.8;color:var(--text-dim);border-top:1px solid var(--border)}
+.knife-body.open{display:block}
 
-/* ===== 页脚 ===== */
-.footer {
-  text-align: center;
-  font-size: 15px;
-  color: var(--text-dim);
-  padding: 48px 0 24px;
-  border-top: 1px solid var(--border);
-  margin-top: 48px;
-}
+/* Socratic */
+.socratic-question{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.socratic-question .q-type{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.75rem;background:rgba(74,126,192,.15);color:var(--blue);margin-bottom:8px}
+.socratic-question .q-text{font-size:.95rem;line-height:1.7;margin-bottom:12px}
+.socratic-question .q-response{margin-top:12px;padding:12px;background:var(--bg3);border-radius:var(--radius);font-size:.85rem;color:var(--text-dim);display:none;border-left:3px solid var(--gold-dim)}
 
-/* ===== 响应式 ===== */
-@media (max-width: 640px) {
-  .container { padding: 24px 16px; }
-  .hero { padding: 48px 0 32px; }
-  .hero h1 { font-size: 42px; }
-  .hero .tagline { font-size: 22px; }
-  .mode-btn { padding: 20px 24px; }
-  .mode-btn .info h3 { font-size: 22px; }
-  .case-box { padding: 24px; }
-  .case-box h3 { font-size: 24px; }
-  .page-header h2 { font-size: 36px; }
-  .knife-header { padding: 18px 20px; }
-  .knife-body { padding: 0 20px 20px; }
-  .review-box { padding: 24px; }
-  .btn { width: 100%; justify-content: center; }
-}
+/* Review */
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:700px){.review-grid{grid-template-columns:1fr}}
+.review-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.review-box h3{font-size:.85rem;color:var(--text-dim);margin-bottom:6px}
+.review-box p{font-size:.88rem;line-height:1.6}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.stat-box .num{font-size:2rem;font-weight:700;color:var(--gold)}
+.stat-box .label{font-size:.8rem;color:var(--text-dim);margin-top:4px}
+.session-list{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.session-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;color:var(--text-dim)}
+.session-item:last-child{border-bottom:none}
+.session-item .date{color:var(--text-muted);font-size:.78rem;margin-right:8px}
+
+/* Helper */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.mb-16{margin-bottom:16px}
+.hidden{display:none}
+.flex{display:flex;gap:8px;flex-wrap:wrap}
+.gap-4{gap:4px}
 </style>
 </head>
 <body>
 
+<div class="header">
+  <div class="header-inner">
+    <h1>⚔️ 判断力格斗场 <span>· 21天训练</span></h1>
+    <div class="header-actions">
+      <button class="btn btn-sm" onclick="showPhase('stats')">📊 记录</button>
+      <button class="btn btn-sm btn-primary" onclick="showPhase('cases')">🥊 开始训练</button>
+    </div>
+  </div>
+</div>
+
 <div class="container" id="app">
 
-<!-- ========== 首页 ========== -->
-<div class="page active" id="page-home">
-  <div class="hero">
-    <div class="hero-badge">JUDGMENT ARENA</div>
-    <h1>判断力<br><span class="accent">格斗场</span></h1>
-    <p class="sub">不是来上课的。是来下场的。</p>
-    <div class="tagline">
-      知识素材是弹药库。<br>
-      判断力是在战场上练出来的。
-    </div>
-
-    <!-- 训练进度条 -->
-    <div id="phase-progress" style="margin-bottom: 40px; display: none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span style="font-size:16px;color:var(--text-dim);">训练进度</span>
-        <span id="phase-label" style="font-size:16px;color:var(--accent);">阶段一：看见</span>
-      </div>
-      <div style="background:var(--border);height:8px;border-radius:4px;overflow:hidden;">
-        <div id="progress-bar-fill" style="background:var(--accent);height:100%;width:0%;border-radius:4px;transition:width .6s;"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:6px;">
-        <span id="progress-count" style="font-size:14px;color:var(--text-dim);">0 / 21 次</span>
-        <span id="progress-percent" style="font-size:14px;color:var(--text-dim);">0%</span>
-      </div>
-    </div>
+<!-- Progress -->
+<div id="progressSection">
+  <div class="flex" style="justify-content:space-between;align-items:center">
+    <span id="phaseLabel" class="phase-badge phase-see">阶段一：看见</span>
+    <span id="countLabel" style="font-size:.8rem;color:var(--text-dim)">0/21 次</span>
   </div>
-  <div class="modes">
-    <button class="mode-btn" onclick="startCase()">
-      <span class="icon">🥊</span>
-      <div class="info">
-        <h3>来一个案例，我做判断</h3>
-        <p>真实决策场景，独立做判断，看三刀解剖你的盲区</p>
-      </div>
-      <span class="arrow">→</span>
-    </button>
-    <div style="margin: -8px 0 16px 72px; display: flex; gap: 12px; align-items: center;">
-      <span style="font-size:15px;color:var(--text-dim);">模式：</span>
-      <button id="mode-fast" class="btn-sm btn-outline" style="background:var(--accent);color:#0c0c0e;border:none;">快速(~5分钟)</button>
-      <button id="mode-standard" class="btn-sm btn-outline" style="border:1px solid var(--accent-dim);color:var(--accent);">标准(~15分钟)</button>
-    </div>
-    <button class="mode-btn" onclick="showPage('page-review')">
-      <span class="icon">📖</span>
-      <div class="info">
-        <h3>勇气账复盘</h3>
-        <p>提交你的真实决策，回溯判断过程，识别盲点</p>
-      </div>
-      <span class="arrow">→</span>
-    </button>
-    <button class="mode-btn" onclick="showPage('page-log')">
-      <span class="icon">📊</span>
-      <div class="info">
-        <h3>训练记录</h3>
-        <p>看看你的判断模式进化轨迹</p>
-      </div>
-      <span class="arrow">→</span>
-    </button>
-  </div>
-  <div class="footer">
-    <p>署名：70后理工老登</p>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label">
+    <span>看见</span><span>理解</span><span>内化</span>
   </div>
 </div>
 
-<!-- ========== 案例页 ========== -->
-<div class="page" id="page-case">
-  <div class="page-header">
-    <button class="back" onclick="showPage('page-home')">← 回训练场</button>
-    <h2>案例 #1</h2>
-    <p class="meta">技术决策 · 信息不完备 · 时间压力</p>
+<!-- Case selection -->
+<div id="phase-cases" class="phase-section active">
+  <h2 style="font-size:1.2rem;margin:20px 0 12px">选一个案例，做你的判断</h2>
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">全部</button>
   </div>
-  <div class="case-box">
-    <h3>你的AI系统突然全线401了</h3>
-    <p>周六下午。你的AI系统突然全线罢工。健康检查401，模型列表401，聊着天突然断了。你切到备用通道——同一个结果："Missing Authentication header"。</p>
-    <p>昨天还好好的。今天全崩了。你没有任何预警，没有任何变更记录。</p>
-    <div class="highlight">你的第一反应是什么？你从哪开始查？</div>
-    <p><span class="tag">约束条件</span> &nbsp;没有变更日志 · 没有监控报警 · 周末值班</p>
+  <div class="case-grid" id="caseGrid"></div>
+</div>
+
+<!-- Scenario -->
+<div id="phase-scenario" class="phase-section">
+  <button class="btn btn-sm mb-16" onclick="showPhase('cases')">← 返回选案例</button>
+  <div class="scenario-box" id="scenarioBox"></div>
+  <button class="btn btn-primary" onclick="showPhase('judgment')">我已经做出了判断，继续</button>
+</div>
+
+<!-- Judgment input -->
+<div id="phase-judgment" class="phase-section">
+  <button class="btn btn-sm mb-16" onclick="showPhase('scenario')">← 返回看场景</button>
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:8px">说出你的判断</h2>
+  <p style="font-size:.85rem;color:var(--text-dim);margin-bottom:12px">先写你的判断。写完才能看三刀的分析——这是一条红线。</p>
+  <div class="textarea-block">
+    <label>你觉得应该怎么选？为什么？</label>
+    <textarea id="judgmentInput" placeholder="写下你此刻的真实想法，不需要完美..."></textarea>
   </div>
-  <div class="judge-area">
-    <label>① 你第一反应是哪里出了问题？</label>
-    <textarea id="judge-q1" placeholder="写你的第一反应，不用多想，写直觉的答案……"></textarea>
-  </div>
-  <div class="judge-area">
-    <label>② 你的排查路线是什么？先查什么，再查什么？</label>
-    <textarea id="judge-q2" placeholder="一步步写出来……"></textarea>
-  </div>
-  <div class="btn-center">
-    <button class="btn" onclick="submitJudgment()">提交判断，看对撞分析 →</button>
+  <button class="btn btn-primary" id="submitJudgmentBtn" onclick="submitJudgment()" disabled>提交判断，看三刀</button>
+</div>
+
+<!-- Three knives -->
+<div id="phase-knives" class="phase-section">
+  <button class="btn btn-sm mb-16" onclick="showPhase('judgment')">← 返回修改判断</button>
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:4px">三刀上场</h2>
+  <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:16px">读完三把刀的分析后，点击「进入追问」</p>
+  <div id="knivesContainer"></div>
+  <div id="knivesDone" class="hidden mt-16">
+    <button class="btn btn-primary" onclick="showPhase('socratic')">进入追问</button>
   </div>
 </div>
 
-<!-- ========== 三刀对撞 ========== -->
-<div class="page" id="page-knives">
-  <div class="page-header">
-    <button class="back" onclick="showPage('page-case')">← 回到判断</button>
-    <h2>三刀对撞</h2>
-    <p class="meta">三把刀解剖同一个案例，你看看自己漏了什么</p>
-  </div>
-  <div class="knives" id="knives-container">
-    <!-- 时间折叠刀 -->
-    <div class="knife-card" id="knife1">
-      <div class="knife-header" onclick="toggleKnife('knife1')">
-        <span class="k-icon">🕐</span>
-        <div class="k-info">
-          <h4>时间折叠刀</h4>
-          <p>把决策拉伸到三个时间尺度看</p>
-        </div>
-        <span class="k-toggle">▾</span>
-      </div>
-      <div class="knife-body">
-        <p class="q">核心追问：你是不是在用"今天很急"的理由，做了一个"三个月后会后悔"的决定？</p>
-        <div class="divider"></div>
-        <p class="a"><strong>3天后。</strong> 查key是最容易的动作，但也是最无效的。三天后你会意识到：你花了一整个周末下午在查一个压根没问题的东西。</p>
-        <p class="a"><strong>3个月后。</strong> 你会忘记这次401的具体细节。但你不会忘记你顺手建了个管理场景这件事——那个十分钟建好的空场景，才是三个月后真正值钱的东西。</p>
-        <p class="a"><strong>3年后。</strong> 回头看，这次故障的价值不在于"修好了"，在于你养成了一个习惯：遇到系统问题，第一反应不是查具体原因，是先往管理场景走。</p>
-        <div class="divider"></div>
-        <p class="a" style="color:var(--accent);">如果三个月前的你预判到今天的局面，你会在哪里提前做一个小动作？</p>
-      </div>
-    </div>
-    <!-- 换位刀 -->
-    <div class="knife-card" id="knife2">
-      <div class="knife-header" onclick="toggleKnife('knife2')">
-        <span class="k-icon">🔄</span>
-        <div class="k-info">
-          <h4>换位刀</h4>
-          <p>坐到别人椅子上看同一个问题</p>
-        </div>
-        <span class="k-toggle">▾</span>
-      </div>
-      <div class="knife-body">
-        <p class="q">核心追问：如果你现在扮演的是你的反对者，你会怎么攻击你现在的判断？</p>
-        <div class="divider"></div>
-        <p class="a"><strong>换到你的执行者。</strong> 他会说：你每次都让我们在问题发生后才查原因，为什么不提前把监控、告警、巡检做好？</p>
-        <p class="a"><strong>换到你的上级。</strong> 他会说：401停了半天，你的恢复时间是多长？有没有预案？有没有人盯着？</p>
-        <p class="a"><strong>换到三个月后的你自己。</strong> 他会说：你要是三个月前就建了管理场景，今天根本不需要花半小时。那十分钟为什么不花？</p>
-        <div class="divider"></div>
-        <p class="a" style="color:var(--accent);">每个人的视角都指向同一个结论：前置决策比事后排查值钱。但你在出了事之前，往往不愿意花那十分钟。</p>
-      </div>
-    </div>
-    <!-- 反事实刀 -->
-    <div class="knife-card" id="knife3">
-      <div class="knife-header" onclick="toggleKnife('knife3')">
-        <span class="k-icon">⚡</span>
-        <div class="k-info">
-          <h4>反事实刀</h4>
-          <p>找到核心假设，然后推翻它</p>
-        </div>
-        <span class="k-toggle">▾</span>
-      </div>
-      <div class="knife-body">
-        <p class="q">核心追问：如果你的核心假设不成立，你的判断还站得住吗？</p>
-        <div class="divider"></div>
-        <p class="a"><strong>你的判断：</strong> 401 → API key有问题。</p>
-        <p class="a"><strong>核心假设：</strong> API key是唯一的认证入口。</p>
-        <p class="a"><strong>如果不成立：</strong> 事实上，你的请求在走到API key验证之前，已经被另一层（headroom代理）拦下来了。你查key的时候，根本不知道headroom存在。</p>
-        <div class="divider"></div>
-        <p class="a" style="color:var(--accent);">你在第一层假设上卡了半小时。而那个假设，从根上就错了。</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="btn-center">
-    <button class="btn btn-outline" onclick="showPage('page-perspectives')">看四个视角如何解剖同一案例 →</button>
-  </div>
+<!-- Socratic -->
+<div id="phase-socratic" class="phase-section">
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:4px">苏格拉底追问</h2>
+  <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:12px">一次只问一个问题。答完再看下一个。</p>
+  <div id="socraticContainer"></div>
 </div>
 
-<!-- ========== 视角展厅 ========== -->
-<div class="page" id="page-perspectives">
-  <div class="page-header">
-    <button class="back" onclick="showPage('page-knives')">← 回三刀对撞</button>
-    <h2>同一件事，四个讲法</h2>
-    <p class="meta">同一个案例，不同思维框架看到的完全不一样</p>
+<!-- Review -->
+<div id="phase-review" class="phase-section">
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:12px">认知复盘</h2>
+  <div class="review-grid" id="reviewGrid"></div>
+  <div class="textarea-block mt-16">
+    <label>你发现了几个自己没想到的角度？</label>
+    <input class="input-field" id="blindCount" type="number" min="0" max="10" placeholder="输入数字" style="max-width:120px">
   </div>
-  <div class="perspectives" id="perspectives-container">
-    <div class="persp-card" id="persp1">
-      <div class="persp-header" onclick="togglePersp('persp1')">
-        <span class="p-icon">🧠</span>
-        <div class="p-info">
-          <h4>姜胡说视角</h4>
-          <p>短句 · 自嘲 · "不是…是…" · 系统思维</p>
-        </div>
-        <span class="p-toggle">▾</span>
-      </div>
-      <div class="persp-body">
-        <p>「系统崩了。你第一反应是查key。</p>
-        <p>不是。不是key的问题。是你三个月前埋的一颗雷。</p>
-        <p>不是配置写错了。是配置层次太多了。</p>
-        <p>不是headroom的错。是它没有被管理的错。</p>
-        <p>系统里每一条隐形的线，都在等你忘了它的那一天。」</p>
-      </div>
-    </div>
-    <div class="persp-card" id="persp2">
-      <div class="persp-header" onclick="togglePersp('persp2')">
-        <span class="p-icon">🌱</span>
-        <div class="p-info">
-          <h4>朴素之道视角</h4>
-          <p>"懂了≠会了" · 学与习分离 · 微调正反馈</p>
-        </div>
-        <span class="p-toggle">▾</span>
-      </div>
-      <div class="persp-body">
-        <p>「三个月前你建了管理场景。你"懂"了——系统配置应该分场景。</p>
-        <p>但你的手没有"会"。出了事第一反应还是查key。</p>
-        <p>"懂"一万个道理，不如"会"一个动作。</p>
-        <p>微调一下：建一个空场景十分钟。养成切过去的习惯一次就够了。</p>
-        <p>不是技术问题。是认知问题。」</p>
-      </div>
-    </div>
-    <div class="persp-card" id="persp3">
-      <div class="persp-header" onclick="togglePersp('persp3')">
-        <span class="p-icon">🌪️</span>
-        <div class="p-info">
-          <h4>碧树西风视角</h4>
-          <p>展示式写作 · 类比打穿 · 墙里有根线</p>
-        </div>
-        <span class="p-toggle">▾</span>
-      </div>
-      <div class="persp-body">
-        <p>「你以为他排查能力强？</p>
-        <p>不是。是他三个月前在墙上贴了一张标签。</p>
-        <p>墙里的线三个月前就预埋好了。电工师傅顺手贴了张标签。</p>
-        <p>三个月后跳闸了。他打开弱电箱看到了标签。十分钟找到那根线。</p>
-        <p>不是你会不会修。是你知不知道去哪修。」</p>
-      </div>
-    </div>
-    <div class="persp-card" id="persp4">
-      <div class="persp-header" onclick="togglePersp('persp4')">
-        <span class="p-icon">🔥</span>
-        <div class="p-info">
-          <h4>卡兹克视角</h4>
-          <p>叙事启动 · 亲自下场 · 前置决策的蝴蝶效应</p>
-        </div>
-        <span class="p-toggle">▾</span>
-      </div>
-      <div class="persp-body">
-        <p>「故事是这样的。</p>
-        <p>你是不是觉得我排查能力强？</p>
-        <p>不是。真正有意思的不是我十分钟修好了。是三个月前我花三分钟建了一个空的场景。</p>
-        <p>建完我就忘了。三个月没用过。但它改变了我的默认动作。</p>
-        <p>想的不是今天的事。想的是三个月后的今天。」</p>
-      </div>
-    </div>
+  <div class="textarea-block">
+    <label>具体是哪几个盲区？</label>
+    <textarea id="blindSpots" rows="2" placeholder="简单描述你发现的盲区..."></textarea>
   </div>
-
-  <div class="review-box">
-    <h3>▎认知复盘</h3>
-    <p>现在回看你的判断——你在三把刀、四个视角里找到了几个你自己没想到的角度？</p>
-    <ul>
-      <li>你的第一反应是查key——这不是你的错，这是所有人的本能。真正的高手不是在查key这一步更快，是根本不在这一步停下。</li>
-      <li>你缺的不是排查技巧。你缺的是一个"出事了先到这里"的默认动作。</li>
-      <li>三个月前花十分钟建的东西，今天给你省了半天。</li>
-    </ul>
-    <div style="margin-top:24px;">
-      <p style="font-size:17px;color:var(--text-dim);">这是你的第一次训练。下一次，你的第一反应会变吗？</p>
-      <div style="margin-top:16px;">
-        <button class="btn btn-sm" onclick="saveRecord()">保存训练记录</button>
-        <button class="btn btn-sm btn-outline" style="margin-left:12px;" onclick="showPage('page-home')">再练一次</button>
-      </div>
-    </div>
+  <div class="textarea-block">
+    <label>这次训练最大的收获是什么？</label>
+    <textarea id="insight" rows="2" placeholder="一句话总结..."></textarea>
   </div>
+  <button class="btn btn-primary mt-8" onclick="saveSession()">保存训练记录</button>
 </div>
 
-<!-- ========== 勇气账复盘（骨架） ========== -->
-<div class="page" id="page-review">
-  <div class="page-header">
-    <button class="back" onclick="showPage('page-home')">← 回训练场</button>
-    <h2>勇气账复盘</h2>
-    <p class="meta">提交一个你过去做过的真实决策</p>
+<!-- Stats -->
+<div id="phase-stats" class="phase-section">
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:12px">训练记录</h2>
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="session-list" id="sessionList">
+    <div style="text-align:center;color:var(--text-dim);padding:20px;font-size:.9rem">还没有训练记录。开始你的第一次训练吧。</div>
   </div>
-  <div class="judge-area">
-    <label>是什么决策？</label>
-    <textarea id="review-q1" placeholder="背景是什么？你面临什么选择？" style="min-height:80px;"></textarea>
-  </div>
-  <div class="judge-area">
-    <label>你选了哪个？为什么？</label>
-    <textarea id="review-q2" placeholder="你的判断依据是什么？"></textarea>
-  </div>
-  <div class="judge-area">
-    <label>结果如何？</label>
-    <textarea id="review-q3" placeholder="后来怎么样了？你判断对了还是偏了？" style="min-height:80px;"></textarea>
-  </div>
-  <div class="btn-center">
-    <button class="btn" onclick="saveReview()">保存到训练记录</button>
-  </div>
-  <div class="footer" style="margin-top:48px;">
-    <p style="color:var(--text-dim);font-size:16px;">记一笔勇气账，不是为了证明自己对了。是为了训练在不确定中做决策的肌肉。</p>
-  </div>
+  <button class="btn btn-sm mt-16" onclick="clearAllData()">清除所有数据</button>
 </div>
 
-<!-- ========== 训练记录 ========== -->
-<div class="page" id="page-log">
-  <div class="page-header">
-    <button class="back" onclick="showPage('page-home')">← 回训练场</button>
-    <h2>训练记录</h2>
-    <p class="meta">你的判断模式进化轨迹</p>
-  </div>
-  <div id="log-empty" style="text-align:center;padding:80px 0;color:var(--text-dim);font-size:20px;">
-    <p>还没有训练记录。练完一次就有了。</p>
-    <div style="margin-top:24px;">
-      <button class="btn" onclick="startCase()">开始第一次训练</button>
-    </div>
-  </div>
-  <div id="log-list" style="display:none;"></div>
 </div>
-
-</div><!-- /container -->
 
 <script>
-// ===== 页面切换 =====
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+// ─── State ─────────────────────────────────────
+let state = {
+  currentCaseId: null,
+  currentCase: null,
+  phase: 'cases',
+  judgment: '',
+  socraticIndex: 0,
+  socraticAnswers: [],
+  sessionCount: 0
+};
+let casesIndex = null;
+let caseCache = {};
+
+// ─── Init ──────────────────────────────────────
+loadTrainingData();
+loadCases();
+
+function loadTrainingData() {
+  try {
+    let d = JSON.parse(localStorage.getItem('judgment_arena') || '{}');
+    state.sessionCount = d.sessions ? d.sessions.length : 0;
+    state.sessions = d.sessions || [];
+  } catch(e) {
+    state.sessions = [];
+    state.sessionCount = 0;
+  }
 }
 
-// ===== 三刀折叠 =====
-function toggleKnife(id) {
-  document.getElementById(id).classList.toggle('expanded');
+function saveTrainingData() {
+  localStorage.setItem('judgment_arena', JSON.stringify({
+    sessions: state.sessions || []
+  }));
+  updateProgress();
 }
 
-// ===== 视角折叠 =====
-function togglePersp(id) {
-  document.getElementById(id).classList.toggle('expanded');
+function getPhase(count) {
+  if (count <= 7) return { id: 'see', label: '阶段一：看见', cls: 'phase-see' };
+  if (count <= 14) return { id: 'understand', label: '阶段二：理解', cls: 'phase-understand' };
+  return { id: 'internalize', label: '阶段三：内化', cls: 'phase-internalize' };
 }
 
-// ===== 开始案例 =====
-function startCase() {
-  document.getElementById('judge-q1').value = '';
-  document.getElementById('judge-q2').value = '';
-  showPage('page-case');
+function updateProgress() {
+  let count = state.sessionCount || 0;
+  let p = getPhase(count);
+  document.getElementById('phaseLabel').textContent = p.label;
+  document.getElementById('phaseLabel').className = 'phase-badge ' + p.cls;
+  document.getElementById('countLabel').textContent = count + '/21 次';
+  document.getElementById('progressFill').style.width = (count / 21 * 100) + '%';
 }
 
-// ===== 提交判断 =====
-function submitJudgment() {
-  const q1 = document.getElementById('judge-q1').value.trim();
-  const q2 = document.getElementById('judge-q2').value.trim();
-  if (!q1 && !q2) { alert('先做判断再进对撞——写下你的第一反应'); return; }
-  showPage('page-knives');
-  // 默认展开第一把刀
-  document.getElementById('knife1').classList.add('expanded');
+// ─── Load Cases ───────────────────────────────
+async function loadCases() {
+  try {
+    let idx = await (await fetch('../case-library/cases-index.json')).json();
+    casesIndex = idx;
+    renderFilterBar();
+    renderCaseGrid('all');
+  } catch(e) {
+    // Fallback: try relative path for local dev
+    try {
+      let idx = await (await fetch('case-library/cases-index.json')).json();
+      casesIndex = idx;
+      renderFilterBar();
+      renderCaseGrid('all');
+    } catch(e2) {
+      document.getElementById('caseGrid').innerHTML =
+        '<div style="text-align:center;padding:40px;color:var(--text-dim)">⚠️ 案例数据加载失败。请确认 case-library/ 目录存在。</div>';
+    }
+  }
 }
 
-// ===== 保存训练记录 =====
-function saveRecord() {
-  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
-  const record = {
-    id: Date.now(),
-    date: new Date().toLocaleDateString('zh-CN'),
-    type: '案例格斗 #1',
-    note: 'API全线401 · 判断力训练'
-  };
-  records.push(record);
-  localStorage.setItem('judgment-arena-records', JSON.stringify(records));
-  showPage('page-log');
-  renderLog();
+async function loadCase(id) {
+  if (caseCache[id]) return caseCache[id];
+  try {
+    let d = await (await fetch(`../case-library/${id}.json`)).json();
+    caseCache[id] = d;
+    return d;
+  } catch(e) {
+    let d = await (await fetch(`case-library/${id}.json`)).json();
+    caseCache[id] = d;
+    return d;
+  }
 }
 
-function saveReview() {
-  const q1 = document.getElementById('review-q1').value.trim();
-  const q2 = document.getElementById('review-q2').value.trim();
-  const q3 = document.getElementById('review-q3').value.trim();
-  if (!q1 || !q2 || !q3) { alert('请填写完整的决策信息'); return; }
-  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
-  records.push({
-    id: Date.now(),
-    date: new Date().toLocaleDateString('zh-CN'),
-    type: '勇气账复盘',
-    note: q1.substring(0, 50) + (q1.length > 50 ? '…' : '')
+// ─── Render ────────────────────────────────────
+function renderFilterBar() {
+  let types = [];
+  if (casesIndex && casesIndex.prototypes) {
+    types = Object.entries(casesIndex.prototypes).map(([k,v]) => ({ name: k, label: k + '(' + v + ')' }));
+  }
+  let html = '<button class="filter-btn active" data-filter="all" onclick="setFilter(\'all\')">全部</button>';
+  types.forEach(t => {
+    html += `<button class="filter-btn" data-filter="${t.name}" onclick="setFilter('${t.name}')">${t.label}</button>`;
   });
-  localStorage.setItem('judgment-arena-records', JSON.stringify(records));
-  document.getElementById('review-q1').value = '';
-  document.getElementById('review-q2').value = '';
-  document.getElementById('review-q3').value = '';
-  showPage('page-log');
-  renderLog();
+  document.getElementById('filterBar').innerHTML = html;
 }
 
-function renderLog() {
-  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
-  const el = document.getElementById('log-list');
-  const empty = document.getElementById('log-empty');
-  if (records.length === 0) {
-    el.style.display = 'none';
-    empty.style.display = 'block';
+function setFilter(type) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.filter-btn[data-filter="${type}"]`).classList.add('active');
+  renderCaseGrid(type);
+}
+
+function renderCaseGrid(filter) {
+  if (!casesIndex) return;
+  let done = new Set((state.sessions || []).map(s => s.caseId));
+  let cases = filter === 'all' ? casesIndex.builtin_cases : casesIndex.builtin_cases.filter(c => c.prototype === filter);
+  let html = cases.map(c => `
+    <div class="case-card ${done.has(c.id) ? 'done' : ''}" onclick="startCase('${c.id}')">
+      ${done.has(c.id) ? '<span class="check">✓</span>' : ''}
+      <div class="tag">${c.prototype}</div>
+      <h3>${c.title}</h3>
+      <p>${c.cognitive_frame}</p>
+    </div>
+  `).join('');
+  document.getElementById('caseGrid').innerHTML = html || '<div style="text-align:center;padding:40px;color:var(--text-dim)">该类型暂无案例</div>';
+}
+
+// ─── Phase Navigation ─────────────────────────
+function showPhase(p) {
+  state.phase = p;
+  document.querySelectorAll('.phase-section').forEach(el => el.classList.remove('active'));
+  document.getElementById('phase-' + p).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  if (p === 'stats') renderStats();
+  if (p === 'socratic') startSocratic();
+}
+
+// ─── Start Case ───────────────────────────────
+async function startCase(id) {
+  let c = await loadCase(id);
+  state.currentCaseId = id;
+  state.currentCase = c;
+  state.judgment = '';
+  state.socraticIndex = 0;
+  state.socraticAnswers = [];
+
+  // Render scenario
+  let s = c.scenario;
+  let html = `<h2>${c.title}</h2>`;
+  html += `<p>${s.background}</p>`;
+  if (s.constraints && s.constraints.length) {
+    html += `<h3>约束条件</h3><div class="flex gap-4">`;
+    s.constraints.forEach(cn => { html += `<span class="constraint-badge">${cn}</span>`; });
+    html += `</div>`;
+  }
+  if (s.time_pressure) {
+    html += `<h3>时间压力</h3><p style="font-size:.85rem;color:var(--text-dim)">${s.time_pressure}</p>`;
+  }
+  document.getElementById('scenarioBox').innerHTML = html;
+
+  // Reset judgment input
+  document.getElementById('judgmentInput').value = '';
+  document.getElementById('submitJudgmentBtn').disabled = true;
+
+  showPhase('scenario');
+}
+
+// Enable submit button when judgment input has text
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'judgmentInput') {
+    document.getElementById('submitJudgmentBtn').disabled = e.target.value.trim().length < 2;
+  }
+});
+
+function submitJudgment() {
+  state.judgment = document.getElementById('judgmentInput').value.trim();
+  if (state.judgment.length < 2) return;
+  renderKnives();
+  showPhase('knives');
+}
+
+// ─── Knives ───────────────────────────────────
+function renderKnives() {
+  let c = state.currentCase;
+  if (!c || !c.three_knives) return;
+  let knives = c.three_knives;
+  let items = [
+    { key: 'time_fold', name: '🥊 时间折叠人', icon: '3天 / 3月 / 3年', data: knives.time_fold },
+    { key: 'perspective_shift', name: '🔄 换位者', icon: '老板 / 执行者 / 反对者', data: knives.perspective_shift },
+    { key: 'counterfactual', name: '⚡ 反事实者', icon: '假设检验', data: knives.counterfactual }
+  ];
+  
+  let html = '';
+  items.forEach((item, i) => {
+    html += `<div class="knife-panel">
+      <div class="knife-header" onclick="toggleKnife(this)">
+        <span><span class="name">${item.name}</span> <span style="font-size:.75rem;color:var(--text-muted)">${item.icon}</span></span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="knife-body">`;
+    
+    if (item.data) {
+      if (item.data.short_term) html += `<p><strong>短期：</strong>${item.data.short_term}</p>`;
+      if (item.data.mid_term) html += `<p><strong>中期：</strong>${item.data.mid_term}</p>`;
+      if (item.data.long_term) html += `<p><strong>长期：</strong>${item.data.long_term}</p>`;
+      if (item.data.boss) html += `<p><strong>老板视角：</strong>${item.data.boss}</p>`;
+      if (item.data.executor) html += `<p><strong>执行者视角：</strong>${item.data.executor}</p>`;
+      if (item.data.opponent) html += `<p><strong>反对者视角：</strong>${item.data.opponent}</p>`;
+      if (item.data.key_assumption) html += `<p><strong>核心假设：</strong>${item.data.key_assumption}</p>`;
+      if (item.data.if_false) html += `<p><strong>如果假设不成立：</strong>${item.data.if_false}</p>`;
+      if (item.data.if_reverse) html += `<p><strong>如果反过来：</strong>${item.data.if_reverse}</p>`;
+    }
+    
+    html += `</div></div>`;
+  });
+  document.getElementById('knivesContainer').innerHTML = html;
+
+  // Auto-open first knife
+  let first = document.querySelector('.knife-panel');
+  if (first) {
+    first.querySelector('.knife-header').classList.add('open');
+    first.querySelector('.knife-body').classList.add('open');
+  }
+
+  document.getElementById('knivesDone').classList.remove('hidden');
+}
+
+function toggleKnife(header) {
+  header.classList.toggle('open');
+  let body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ─── Socratic ─────────────────────────────────
+function startSocratic() {
+  let c = state.currentCase;
+  if (!c || !c.socratic_questions) return;
+  
+  let qKeys = ['clarify', 'hypothesis', 'evidence', 'perspective', 'consequence'];
+  let qLabels = { clarify: '澄清', hypothesis: '假设检验', evidence: '证据检验', perspective: '视角转换', consequence: '后果追踪' };
+  let questions = qKeys.filter(k => c.socratic_questions[k]).map(k => ({
+    key: k,
+    label: qLabels[k] || k,
+    text: c.socratic_questions[k]
+  }));
+
+  // Pick first 3-4
+  let selected;
+  if (c.bindings && c.bindings.weighted_knife === 'counterfactual') {
+    // Start with hypothesis/evidence for counterfactual dominant cases
+    selected = [questions.find(q => q.key === 'hypothesis'), questions.find(q => q.key === 'evidence')]
+      .filter(Boolean).concat(questions.filter(q => q.key !== 'hypothesis' && q.key !== 'evidence'));
+  } else {
+    selected = questions;
+  }
+  selected = selected.slice(0, 4);  // max 4 rounds
+
+  state.socraticIndex = 0;
+  state.socraticAnswers = [];
+  state.socraticQuestions = selected;
+  renderSocraticQuestion(0);
+}
+
+function renderSocraticQuestion(idx) {
+  let qs = state.socraticQuestions;
+  if (!qs || idx >= qs.length) {
+    // Done with socratic, move to review
+    showPhase('review');
+    renderReview();
     return;
   }
-  empty.style.display = 'none';
-  el.style.display = 'block';
-
-  // 三阶段计算
-  const phase = records.length <= 7 ? 1 : records.length <= 14 ? 2 : 3;
-  const phaseNames = {1: '看见（第1-7次）', 2: '理解（第8-14次）', 3: '内化（第15-21次）'};
-  const progressPct = Math.min(100, Math.round((records.length / 21) * 100));
-  const halfIdx = Math.floor(records.length / 2);
-
-  let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
-
-  // 训练统计看板
-  html += `<div class="case-box" style="margin-bottom:24px;">
-    <h3 style="font-size:24px;margin-bottom:16px;">训练统计</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div style="background:var(--bg-card);padding:16px;border-radius:8px;text-align:center;">
-        <div style="font-size:36px;font-weight:700;color:var(--accent);">${records.length}</div>
-        <div style="font-size:15px;color:var(--text-dim);">总训练次数</div>
+  
+  let q = qs[idx];
+  let container = document.getElementById('socraticContainer');
+  container.innerHTML = `
+    <div class="socratic-question">
+      <span class="q-type">${q.label}</span>
+      <div class="q-text">${q.text}</div>
+      <div class="textarea-block">
+        <label>你的回答</label>
+        <textarea id="socraticAnswer" rows="3" placeholder="想清楚再写..."></textarea>
       </div>
-      <div style="background:var(--bg-card);padding:16px;border-radius:8px;text-align:center;">
-        <div style="font-size:36px;font-weight:700;color:var(--accent);">${progressPct}%</div>
-        <div style="font-size:15px;color:var(--text-dim);">21天完成度</div>
+      <button class="btn btn-primary" id="submitSocraticBtn" onclick="submitSocraticAnswer()" disabled>提交回答</button>
+      <div class="q-response" id="socraticResponse"></div>
+    </div>
+  `;
+  
+  document.getElementById('submitSocraticBtn').disabled = true;
+  document.getElementById('socraticAnswer').addEventListener('input', function() {
+    document.getElementById('submitSocraticBtn').disabled = this.value.trim().length < 1;
+  });
+  document.getElementById('socraticAnswer').focus();
+}
+
+function submitSocraticAnswer() {
+  let answer = document.getElementById('socraticAnswer').value.trim();
+  if (!answer) return;
+  
+  state.socraticAnswers.push(answer);
+  
+  // Show response and next button
+  let response = document.getElementById('socraticResponse');
+  response.style.display = 'block';
+  
+  // Simple follow-up based on keywords
+  let followUps = {
+    clarify: '你说出了你理解的概念。接下来试试——如果换一个人用不同的定义说同一件事，你会怎么回应？',
+    hypothesis: '你的假设说出来了。下一步是问自己：这个假设如果今天就不成立，你的判断还站得住吗？',
+    evidence: '你找到了依据。现在问自己：有没有相反的证据你忽略了？如果有，它会影响你的判断吗？',
+    perspective: '你看到了另一个角度。试试再找一个——谁能从你完全想不到的立场来看这件事？',
+    consequence: '你推到了后果。最后一个问题：如果这个后果不会发生，你现在的判断会不同吗？'
+  };
+  
+  let q = state.socraticQuestions[state.socraticIndex];
+  response.innerHTML = '<em>' + (followUps[q.key] || '好的，已经记录。）') + '</em>';
+  
+  document.getElementById('submitSocraticBtn').disabled = true;
+  document.getElementById('socraticAnswer').disabled = true;
+  
+  // Auto advance after a moment
+  let nextIdx = state.socraticIndex + 1;
+  state.socraticIndex = nextIdx;
+  
+  setTimeout(() => {
+    renderSocraticQuestion(nextIdx);
+  }, 1800);
+}
+
+// ─── Review ────────────────────────────────────
+function renderReview() {
+  let c = state.currentCase;
+  let grid = document.getElementById('reviewGrid');
+  grid.innerHTML = `
+    <div class="review-box">
+      <h3>你最初的判断</h3>
+      <p>${state.judgment || '(未记录)'}</p>
+    </div>
+    <div class="review-box">
+      <h3>案例类型</h3>
+      <p>原型：${c.prototype || '-'} | 认知框架：${c.cognitive_frame || '-'}</p>
+      ${c.bindings && c.bindings.weighted_knife ? `<p style="margin-top:8px;font-size:.82rem">强化刀：${c.bindings.weighted_knife}</p>` : ''}
+      ${c.common_blind_spots ? `<p style="margin-top:8px;font-size:.82rem">常见盲区：${c.common_blind_spots.slice(0,2).join('、')}</p>` : ''}
+    </div>
+  `;
+  document.getElementById('blindCount').value = '';
+  document.getElementById('blindSpots').value = '';
+  document.getElementById('insight').value = '';
+}
+
+// ─── Save ──────────────────────────────────────
+function saveSession() {
+  let count = parseInt(document.getElementById('blindCount').value) || 0;
+  let spots = document.getElementById('blindSpots').value.trim();
+  let insight = document.getElementById('insight').value.trim();
+
+  let session = {
+    id: (state.sessions.length + 1),
+    date: new Date().toISOString().slice(0, 10),
+    caseId: state.currentCaseId,
+    title: state.currentCase ? state.currentCase.title : '',
+    prototype: state.currentCase ? state.currentCase.prototype : '',
+    judgment: state.judgment,
+    blindSpotCount: count,
+    blindSpots: spots,
+    insight: insight,
+    socraticAnswers: state.socraticAnswers
+  };
+
+  state.sessions.push(session);
+  state.sessionCount = state.sessions.length;
+  saveTrainingData();
+
+  // Show done message
+  document.getElementById('phase-review').innerHTML = `
+    <div style="text-align:center;padding:40px">
+      <h2 style="color:var(--gold);font-size:1.5rem">✅ 第 ${session.id} 次训练已记录</h2>
+      <p style="color:var(--text-dim);margin:12px 0">当前阶段：${getPhase(state.sessionCount).label}</p>
+      <p style="color:var(--text-dim);margin:12px 0">发现盲区：${count} 个</p>
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="location.reload()">再来一次</button>
+        <button class="btn" onclick="showPhase('stats')">看训练记录</button>
       </div>
     </div>
-    <div style="margin-top:16px;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:15px;color:var(--text-dim);">当前阶段</span>
-        <span style="font-size:15px;color:var(--accent);">${phaseNames[phase]}</span>
-      </div>
-      <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;">
-        <div style="background:var(--accent);height:100%;width:${progressPct}%;border-radius:3px;"></div>
-      </div>
-    </div>
-  </div>`;
-  // 倒序排列
-  [...records].reverse().forEach(r => {
-    html += `<div class="case-box" style="padding:20px 28px;display:flex;align-items:center;gap:16px;">
-      <span style="font-size:24px;">${r.type === '案例格斗 #1' ? '🥊' : '📖'}</span>
-      <div style="flex:1;">
-        <div style="font-size:18px;font-weight:600;">${r.type}</div>
-        <div style="font-size:15px;color:var(--text-dim);">${r.note}</div>
-      </div>
-      <span style="font-size:14px;color:var(--text-dim);">${r.date}</span>
+  `;
+}
+
+// ─── Stats ─────────────────────────────────────
+function renderStats() {
+  let sessions = state.sessions || [];
+  let count = sessions.length;
+
+  let statsHtml = `
+    <div class="stat-box"><div class="num">${count}</div><div class="label">总训练次数</div></div>
+    <div class="stat-box"><div class="num">${count > 0 ? Math.round(sessions.reduce((s,x) => s + (x.blindSpotCount || 0), 0) / count * 10) / 10 : 0}</div><div class="label">平均盲区发现</div></div>
+    <div class="stat-box"><div class="num">${getPhase(count).label.slice(0,3)}</div><div class="label">当前阶段</div></div>
+    <div class="stat-box"><div class="num">${count >= 21 ? '🎉' : (21 - count) + '次'}</div><div class="label">距完成</div></div>
+  `;
+  document.getElementById('statsGrid').innerHTML = statsHtml;
+
+  if (sessions.length === 0) {
+    document.getElementById('sessionList').innerHTML =
+      '<div style="text-align:center;color:var(--text-dim);padding:20px;font-size:.9rem">还没有训练记录。开始你的第一次训练吧。</div>';
+    return;
+  }
+
+  let listHtml = '<h3 style="font-size:.95rem;margin-bottom:8px;color:var(--text-dim)">训练历史</h3>';
+  sessions.slice().reverse().forEach(s => {
+    listHtml += `<div class="session-item">
+      <span class="date">#${s.id} ${s.date}</span>
+      <strong>${s.title}</strong>
+      <span style="color:var(--text-muted)"> | ${s.prototype || '-'}</span>
+      ${s.blindSpotCount ? ` | 盲区 ${s.blindSpotCount} 个` : ''}
+      ${s.insight ? ` | ${s.insight.slice(0,30)}${s.insight.length > 30 ? '...' : ''}` : ''}
     </div>`;
   });
-  html += '</div>';
-  el.innerHTML = html;
+  document.getElementById('sessionList').innerHTML = listHtml;
 }
 
-// ===== 模式切换 =====
-let currentMode = 'fast';
-document.getElementById('mode-fast').addEventListener('click', function() {
-  currentMode = 'fast';
-  this.style.background = 'var(--accent)';
-  this.style.color = '#0c0c0e';
-  this.style.border = 'none';
-  document.getElementById('mode-standard').style.background = 'transparent';
-  document.getElementById('mode-standard').style.color = 'var(--accent)';
-  document.getElementById('mode-standard').style.border = '1px solid var(--accent-dim)';
-});
-document.getElementById('mode-standard').addEventListener('click', function() {
-  currentMode = 'standard';
-  this.style.background = 'var(--accent)';
-  this.style.color = '#0c0c0e';
-  this.style.border = 'none';
-  document.getElementById('mode-fast').style.background = 'transparent';
-  document.getElementById('mode-fast').style.color = 'var(--accent)';
-  document.getElementById('mode-fast').style.border = '1px solid var(--accent-dim)';
-});
-
-// override submitJudgment to show mode
-const origSubmit = submitJudgment;
-submitJudgment = function() {
-  const modeLabel = currentMode === 'fast' ? '快速模式' : '标准模式';
-  const knives = document.getElementById('knives-container');
-  if (currentMode === 'fast') {
-    // 快速模式只保留第一把刀
-    document.getElementById('knife2').style.display = 'none';
-    document.getElementById('knife3').style.display = 'none';
-    document.getElementById('perspectives-container').style.display = 'none';
-  }
-  origSubmit();
-};
-
-// ===== 初始化 =====
-renderLog();
-
-// 首页进度条
-function updateHomeProgress() {
-  const records = JSON.parse(localStorage.getItem('judgment-arena-records') || '[]');
-  const el = document.getElementById('phase-progress');
-  if (records.length === 0) { el.style.display = 'none'; return; }
-  el.style.display = 'block';
-  const phase = records.length <= 7 ? 1 : records.length <= 14 ? 2 : 3;
-  const phaseNames = {1: '阶段一：看见', 2: '阶段二：理解', 3: '阶段三：内化'};
-  const pct = Math.min(100, Math.round((records.length / 21) * 100));
-  document.getElementById('phase-label').textContent = phaseNames[phase];
-  document.getElementById('progress-bar-fill').style.width = pct + '%';
-  document.getElementById('progress-count').textContent = records.length + ' / 21 次';
-  document.getElementById('progress-percent').textContent = pct + '%';
+// ─── Clear Data ────────────────────────────────
+function clearAllData() {
+  if (!confirm('确定清除所有训练数据？')) return;
+  localStorage.removeItem('judgment_arena');
+  state.sessions = [];
+  state.sessionCount = 0;
+  saveTrainingData();
+  renderStats();
 }
-updateHomeProgress();
+
+// ─── Init ──────────────────────────────────────
+updateProgress();
 </script>
 </body>
 </html>
