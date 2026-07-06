@@ -107,7 +107,9 @@ textarea:focus{outline:none;border-color:var(--gold-dim)}
 .session-item:last-child{border-bottom:none}
 .session-item .date{color:var(--text-muted);font-size:.78rem;margin-right:8px}
 
-/* Helper */
+/* Disclaimer banner */
+.disclaimer-banner{background:rgba(212,168,83,.08);border:1px solid var(--gold-dim);border-radius:0;padding:10px 24px;font-size:.82rem;color:var(--gold);line-height:1.6;text-align:center}
+.disclaimer-banner strong{color:var(--text)}
 .text-center{text-align:center}
 .mt-8{margin-top:8px}
 .mt-16{margin-top:16px}
@@ -122,12 +124,19 @@ textarea:focus{outline:none;border-color:var(--gold-dim)}
 
 <div class="header">
   <div class="header-inner">
-    <h1>⚔️ 判断力训练场 <span>· 21天训练</span></h1>
+    <h1>⚔️ 判断力训练场</h1>
     <div class="header-actions">
       <button class="btn btn-sm" onclick="showPhase('stats')">📊 记录</button>
       <button class="btn btn-sm btn-primary" onclick="showPhase('cases')">🥊 开始训练</button>
     </div>
   </div>
+</div>
+
+<div class="disclaimer-banner">
+  <strong>📌 关于本页面的说明：</strong>
+  这是一个自助练习工具。案例和追问都是预设的，你写任何判断看到的分析都一样。
+  <strong>真正的判断力训练（三刀会针对你的具体判断回应、追问会从你的回答里长出来）</strong>
+  需要通过对话完成。如果你想要完整的训练体验，请在对话中告诉我「开始训练」。
 </div>
 
 <div class="container" id="app">
