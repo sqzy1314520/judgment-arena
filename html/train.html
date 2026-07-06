@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>70后理工老登 · 判断力训练场</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0c;--bg2:#121214;--bg3:#1a1a20;--card:#1e1e24;--card-hover:#282830;--text:#e8e6e3;--text-dim:#787880;--text-muted:#585860;--gold:#d4a853;--gold-dim:#a07830;--red:#c0392b;--green:#27ae60;--blue:#4a7ec0;--border:#2a2a32;--radius:8px;--shadow:0 2px 12px rgba(0,0,0,.3)}
+html{font-size:15px}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:var(--gold);text-decoration:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg3)}::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:3px}
+
+/* Header */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 24px;position:sticky;top:0;z-index:100}
+.header-inner{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.header h1{font-size:1.3rem;color:var(--gold);letter-spacing:2px}
+.header h1 span{color:var(--text-dim);font-size:.85rem;margin-left:8px}
+.header-actions{display:flex;gap:8px}
+.btn{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:8px 16px;border-radius:var(--radius);cursor:pointer;font-size:.85rem;transition:.2s}
+.btn:hover{background:var(--card-hover);border-color:var(--gold-dim)}
+.btn-primary{background:var(--gold-dim);color:#fff;border-color:var(--gold)}
+.btn-primary:hover{background:var(--gold)}
+.btn-sm{padding:4px 12px;font-size:.8rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Container */
+.container{max-width:1000px;margin:0 auto;padding:24px}
+
+/* Progress bar */
+.progress-bar{background:var(--bg3);border-radius:20px;height:8px;margin:12px 0 4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:20px;transition:width .5s}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:var(--text-dim)}
+
+/* Phase badge */
+.phase-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.75rem;font-weight:600}
+.phase-see{background:rgba(212,168,83,.15);color:var(--gold)}
+.phase-understand{background:rgba(74,126,192,.15);color:var(--blue)}
+.phase-internalize{background:rgba(39,174,96,.15);color:var(--green)}
+
+/* Case grid */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.filter-btn{padding:4px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-size:.8rem;transition:.2s}
+.filter-btn:hover{border-color:var(--gold-dim);color:var(--text)}
+.filter-btn.active{background:var(--gold-dim);color:#fff;border-color:var(--gold)}
+.case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.case-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:.2s}
+.case-card:hover{background:var(--card-hover);border-color:var(--gold-dim);transform:translateY(-1px)}
+.case-card.done{border-left:3px solid var(--green)}
+.case-card .tag{display:inline-block;padding:1px 8px;border-radius:10px;background:rgba(212,168,83,.1);color:var(--gold-dim);font-size:.7rem;margin-bottom:6px}
+.case-card h3{font-size:.95rem;margin-bottom:4px;color:var(--text)}
+.case-card p{font-size:.8rem;color:var(--text-dim);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.case-card .check{color:var(--green);float:right}
+
+/* Phases */
+.phase-section{display:none;animation:fadeIn .3s}
+.phase-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Scenario */
+.scenario-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;line-height:1.8}
+.scenario-box h2{font-size:1.2rem;color:var(--gold);margin-bottom:12px}
+.scenario-box h3{font-size:.95rem;color:var(--text-dim);margin:12px 0 6px}
+.scenario-box ul{padding-left:16px;font-size:.85rem;color:var(--text-dim)}
+.scenario-box li{margin-bottom:4px}
+.constraint-badge{display:inline-block;padding:2px 8px;border-radius:10px;background:rgba(192,57,43,.1);color:var(--red);font-size:.75rem;margin:2px}
+
+/* Textarea */
+.textarea-block{margin:16px 0}
+.textarea-block label{display:block;font-size:.85rem;color:var(--text-dim);margin-bottom:6px}
+textarea{width:100%;min-height:100px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:12px;font-size:.9rem;font-family:inherit;line-height:1.6;resize:vertical}
+textarea:focus{outline:none;border-color:var(--gold-dim)}
+.input-field{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:10px 12px;font-size:.9rem;font-family:inherit}
+.input-field:focus{outline:none;border-color:var(--gold-dim)}
+
+/* Knives */
+.knife-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.knife-header{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:.2s;user-select:none}
+.knife-header:hover{background:var(--card-hover)}
+.knife-header .name{font-weight:600;font-size:.95rem}
+.knife-header .arrow{transition:transform .3s;color:var(--text-dim);font-size:.8rem}
+.knife-header.open .arrow{transform:rotate(180deg)}
+.knife-body{display:none;padding:0 18px 18px;font-size:.88rem;line-height:1.8;color:var(--text-dim);border-top:1px solid var(--border)}
+.knife-body.open{display:block}
+
+/* Socratic */
+.socratic-question{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.socratic-question .q-type{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.75rem;background:rgba(74,126,192,.15);color:var(--blue);margin-bottom:8px}
+.socratic-question .q-text{font-size:.95rem;line-height:1.7;margin-bottom:12px}
+.socratic-question .q-response{margin-top:12px;padding:12px;background:var(--bg3);border-radius:var(--radius);font-size:.85rem;color:var(--text-dim);display:none;border-left:3px solid var(--gold-dim)}
+
+/* Review */
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:700px){.review-grid{grid-template-columns:1fr}}
+.review-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.review-box h3{font-size:.85rem;color:var(--text-dim);margin-bottom:6px}
+.review-box p{font-size:.88rem;line-height:1.6}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.stat-box .num{font-size:2rem;font-weight:700;color:var(--gold)}
+.stat-box .label{font-size:.8rem;color:var(--text-dim);margin-top:4px}
+.session-list{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.session-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;color:var(--text-dim)}
+.session-item:last-child{border-bottom:none}
+.session-item .date{color:var(--text-muted);font-size:.78rem;margin-right:8px}
+
+/* Helper */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.mb-16{margin-bottom:16px}
+.hidden{display:none}
+.flex{display:flex;gap:8px;flex-wrap:wrap}
+.gap-4{gap:4px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>⚔️ 判断力训练场 <span>· 21天训练</span></h1>
+    <div class="header-actions">
+      <button class="btn btn-sm" onclick="showPhase('stats')">📊 记录</button>
+      <button class="btn btn-sm btn-primary" onclick="showPhase('cases')">🥊 开始训练</button>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="app">
+
+<!-- Progress -->
+<div id="progressSection">
+  <div class="flex" style="justify-content:space-between;align-items:center">
+    <span id="phaseLabel" class="phase-badge phase-see">阶段一：看见</span>
+    <span id="countLabel" style="font-size:.8rem;color:var(--text-dim)">0/21 次</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label">
+    <span>看见</span><span>理解</span><span>内化</span>
+  </div>
+</div>
+
+<!-- Case selection -->
+<div id="phase-cases" class="phase-section active">
+  <h2 style="font-size:1.2rem;margin:20px 0 12px">选一个案例，做你的判断</h2>
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">全部</button>
+  </div>
+  <div class="case-grid" id="caseGrid"></div>
+</div>
+
+<!-- Scenario -->
+<div id="phase-scenario" class="phase-section">
+  <button class="btn btn-sm mb-16" onclick="showPhase('cases')">← 返回选案例</button>
+  <div class="scenario-box" id="scenarioBox"></div>
+  <button class="btn btn-primary" onclick="showPhase('judgment')">我已经做出了判断，继续</button>
+</div>
+
+<!-- Judgment input -->
+<div id="phase-judgment" class="phase-section">
+  <button class="btn btn-sm mb-16" onclick="showPhase('scenario')">← 返回看场景</button>
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:8px">说出你的判断</h2>
+  <p style="font-size:.85rem;color:var(--text-dim);margin-bottom:12px">先写你的判断。写完才能看三刀的分析——这是一条红线。</p>
+  <div class="textarea-block">
+    <label>你觉得应该怎么选？为什么？</label>
+    <textarea id="judgmentInput" placeholder="写下你此刻的真实想法，不需要完美..."></textarea>
+  </div>
+  <button class="btn btn-primary" id="submitJudgmentBtn" onclick="submitJudgment()" disabled>提交判断，看三刀</button>
+</div>
+
+<!-- Three knives -->
+<div id="phase-knives" class="phase-section">
+  <button class="btn btn-sm mb-16" onclick="showPhase('judgment')">← 返回修改判断</button>
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:4px">三刀上场</h2>
+  <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:16px">读完三把刀的分析后，点击「进入追问」</p>
+  <div id="knivesContainer"></div>
+  <div id="knivesDone" class="hidden mt-16">
+    <button class="btn btn-primary" onclick="showPhase('socratic')">进入追问</button>
+  </div>
+</div>
+
+<!-- Socratic -->
+<div id="phase-socratic" class="phase-section">
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:4px">苏格拉底追问</h2>
+  <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:12px">一次只问一个问题。答完再看下一个。</p>
+  <div id="socraticContainer"></div>
+</div>
+
+<!-- Review -->
+<div id="phase-review" class="phase-section">
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:12px">认知复盘</h2>
+  <div class="review-grid" id="reviewGrid"></div>
+  <div class="textarea-block mt-16">
+    <label>你发现了几个自己没想到的角度？</label>
+    <input class="input-field" id="blindCount" type="number" min="0" max="10" placeholder="输入数字" style="max-width:120px">
+  </div>
+  <div class="textarea-block">
+    <label>具体是哪几个盲区？</label>
+    <textarea id="blindSpots" rows="2" placeholder="简单描述你发现的盲区..."></textarea>
+  </div>
+  <div class="textarea-block">
+    <label>这次训练最大的收获是什么？</label>
+    <textarea id="insight" rows="2" placeholder="一句话总结..."></textarea>
+  </div>
+  <button class="btn btn-primary mt-8" onclick="saveSession()">保存训练记录</button>
+</div>
+
+<!-- Stats -->
+<div id="phase-stats" class="phase-section">
+  <h2 style="font-size:1.1rem;color:var(--gold);margin-bottom:12px">训练记录</h2>
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="session-list" id="sessionList">
+    <div style="text-align:center;color:var(--text-dim);padding:20px;font-size:.9rem">还没有训练记录。开始你的第一次训练吧。</div>
+  </div>
+  <button class="btn btn-sm mt-16" onclick="clearAllData()">清除所有数据</button>
+</div>
+
+</div>
+
+<script>
+
+// ─── Embedded Case Data ──────────────────
+const EMBEDDED_CASES_INDEX = {
+  "version": "1.1",
+  "updated": "2026-07-05",
+  "total": 15,
+  "prototypes": {
+    "安全vs成长": 5,
+    "人情vs利害": 4,
+    "需要vs想要": 3,
+    "花钱买安心": 3
+  },
+  "builtin_cases": [
+    {
+      "id": "case-001",
+      "title": "该不该跳槽——新机会还是舒适区",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-002",
+      "title": "朋友借钱，借不借",
+      "type": "人生决策",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-003",
+      "title": "该不该买——双十一的购物车，清还是不清",
+      "type": "消费决策",
+      "prototype": "需要vs想要",
+      "cognitive_frame": "first-principles"
+    },
+    {
+      "id": "case-004",
+      "title": "该不该开口——发现同事的错，说还是不说",
+      "type": "人际关系",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-005",
+      "title": "该不该学——AI时代来了，要不要报班",
+      "type": "学习决策",
+      "prototype": "花钱买安心",
+      "cognitive_frame": "sharp-edge-standard"
+    },
+    {
+      "id": "case-006",
+      "title": "该不该换个城市——去更大的世界还是守着已有的生活",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-007",
+      "title": "该不该离婚——留下来将就还是走出去重新开始",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-008",
+      "title": "该不该转行——深耕已有的专业还是清零去追一个新的方向",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-009",
+      "title": "要不要二孩——多一个孩子是加法还是减法",
+      "type": "人生决策",
+      "prototype": "安全vs成长",
+      "cognitive_frame": "cognitive-sovereignty"
+    },
+    {
+      "id": "case-010",
+      "title": "该不该帮忙——同事甩锅让你帮忙擦屁股",
+      "type": "人际关系",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-011",
+      "title": "该不该拉黑——一个让你负能量的朋友，还要不要继续联系",
+      "type": "人际关系",
+      "prototype": "人情vs利害",
+      "cognitive_frame": "decision-framework"
+    },
+    {
+      "id": "case-012",
+      "title": "该不该换车——车还能开，但你很想换",
+      "type": "消费决策",
+      "prototype": "需要vs想要",
+      "cognitive_frame": "first-principles"
+    },
+    {
+      "id": "case-013",
+      "title": "该不该囤书——书架上堆满了买了但没读的书",
+      "type": "消费决策",
+      "prototype": "需要vs想要",
+      "cognitive_frame": "first-principles"
+    },
+    {
+      "id": "case-014",
+      "title": "该不该考公——当前的职业累了，铁饭碗是解药还是错觉",
+      "type": "学习决策",
+      "prototype": "花钱买安心",
+      "cognitive_frame": "sharp-edge-standard"
+    },
+    {
+      "id": "case-015",
+      "title": "该不该考证——花半年时间考个不会用的证书",
+      "type": "学习决策",
+      "prototype": "花钱买安心",
+      "cognitive_frame": "sharp-edge-standard"
+    }
+  ],
+  "user_cases": [],
+  "types": [
+    "人生决策",
+    "消费决策",
+    "人际关系",
+    "学习决策"
+  ]
+};
+const EMBEDDED_CASES = {
+  "case-001": {
+    "id": "case-001",
+    "title": "该不该跳槽——新机会还是舒适区",
+    "type": "人生决策",
+    "cognitive_frame": "cognitive-sovereignty",
+    "prototype": "安全vs成长",
+    "frame_dimensions": {
+      "meaning_perception": "你现在的工作还能让你感知到成长吗？三年前的兴奋→今天的疲态→三年后的麻木",
+      "value_judgment": "什么是你的价值？三年的工龄换一个稳定，还是一次不确定性换新可能",
+      "world_construction": "你在建'我试过了'还是'我忍住了'的人生版本"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你在现在的公司干了3年，稳定、不加班、同事关系不错。但工资两年没涨了，学不到新东西，每天做的事闭着眼睛都能干。这时候一个猎头找上门，新公司给的工资涨了30%，但是个创业公司，加班多、不稳定。你有一个正在上幼儿园的孩子，老婆希望你别折腾。",
+      "constraints": [
+        "现有工作稳定但不成长，干了三年没涨薪",
+        "新机会工资涨30%，但创业公司不稳定",
+        "孩子在上幼儿园，家庭需要稳定的收入",
+        "老婆希望你求稳，别折腾"
+      ],
+      "time_pressure": "猎头说这个岗位下周就截止"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "短期看，留下了安全但憋屈。跳了兴奋但担心。",
+        "mid_term": "3个月后看，跳了可能适应了新节奏，也可能后悔。没跳可能更焦虑了，也可能庆幸躲过一劫。",
+        "long_term": "3年后看，你不会纠结于那30%的涨薪。你会问自己：当时我是不是太怕了？"
+      },
+      "perspective_shift": {
+        "boss": "你现在的老板不希望走——稳定的人不好找。但三年不给你涨薪的时候，他也没替你考虑什么。",
+        "executor": "你老婆站在家庭安全的一边。但每天看你回来没精打采，她也难受。",
+        "opponent": "创业公司死亡率很高。那30%的涨薪可能只够你干三个月。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设跳槽一定不安全，留下一定安全。",
+        "if_false": "如果现在公司明年裁员呢？稳定三年不等于永远稳定。",
+        "if_reverse": "如果新公司明年被收购了，你错过了窗口期，还会觉得现在的选择对吗？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的稳定，是指不裁员，还是指你每天都能猜到明天干什么？",
+      "hypothesis": "你假设跳槽一定不稳定。你真的了解那家创业公司的融资情况和业务前景吗？",
+      "evidence": "三年没涨薪是事实。但你是主动提过涨薪被拒，还是连提都没提？",
+      "perspective": "如果这30%的涨薪换成30%的股权，你的决策会变吗？",
+      "consequence": "选了跳槽→万一公司倒了→再找工作。选了留下→两年后还没涨薪→你受得了吗？"
+    },
+    "bindings": {
+      "weighted_knife": "time_fold",
+      "enhanced_questions": [
+        "你有多少应急储蓄？够支撑多长时间的求职期？",
+        "你上一次学到新东西是什么时候？三个月前还是三年前？"
+      ]
+    },
+    "common_blind_spots": [
+      "把不安全感当理性——怕的比真的多",
+      "用今天的稳定假设明天的安全——三年不涨薪本身就是一个信号",
+      "把涨薪当作唯一的衡量维度——没算上成长空间和行业趋势"
+    ],
+    "related_cases": [
+      {
+        "id": "case-002",
+        "reason": "同属职业与人生选择——一个在跳槽与留守间权衡，一个在学习与安于现状间权衡"
+      }
+    ],
+    "source": {
+      "origin": "经典职业决策场景——跳槽还是留守",
+      "date": "2026-07-05"
+    }
+  },
+  "case-002": {
+    "id": "case-002",
+    "title": "朋友借钱，借不借",
+    "type": "人生决策",
+    "cognitive_frame": "decision-framework",
+    "prototype": "人情vs利害",
+    "frame_dimensions": {
+      "define_decision": "你真正在决定的是借钱，还是决定这段友谊的边界？",
+      "decompose_options": "借/不借之外——借一部分、帮他找别的筹钱渠道",
+      "stress_test": "信任测试：如果明天要向全家人解释你的决定，你站得住吗？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "一个认识了十年的朋友，最近联系你说生意周转不开，想借5万块钱，说好三个月还。你知道他以前做生意亏过一次，现在重新起步，确实不容易。但你也听说过他欠别人钱还没还完。你老婆知道这事之后，说了一句：借出去容易，要回来难。",
+      "constraints": [
+        "认识了十年的老朋友",
+        "他以前亏过一次，现在重新起步",
+        "听说过他欠别人的钱还没还完",
+        "老婆明确反对",
+        "5万块对你来说不是小数目，但也不是拿不出来"
+      ],
+      "time_pressure": "他说这周内需要"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "借了，你朋友千恩万谢，你心里踏实。不借，你觉得亏欠了这段友谊。",
+        "mid_term": "3个月后，他还没还。你开始纠结怎么开口催。他可能也开始躲着你。",
+        "long_term": "3年后回头看，这段友谊还在不在，大概率不取决于这5万块，而取决于你们对这件事的处理方式。"
+      },
+      "perspective_shift": {
+        "boss": "你老婆说得对——借出去容易要回来难。她站在家庭财务安全的角度。",
+        "executor": "你朋友觉得你混得不错，应该帮他一把。但你的钱是你自己辛苦挣的。",
+        "opponent": "你听过他欠别人钱没还完。如果他跟别人都没还，凭什么跟你就能还？"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设借了钱就能保住这段友谊。",
+        "if_false": "如果钱借出去之后他还不上了，你们连朋友都没得做了。",
+        "if_reverse": "如果不借钱，你真诚地跟他说明原因，也许友谊反而更真诚。"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的帮他一把，是帮他解决短期周转，还是填补他之前亏空的窟窿？",
+      "hypothesis": "你假设他三个月后一定能还。你知道他现在每个月收入多少、支出多少吗？",
+      "evidence": "你说他欠别人钱没还完——这个信息你从哪来的？确认过吗？",
+      "perspective": "如果今天来借钱的是你老婆的闺蜜，不是你的兄弟，你的判断标准会变吗？",
+      "consequence": "借了→三个月后没还→催还是不催？不催自己难受，催了朋友难受。不借→当面说清楚→友谊可能反而更轻松。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "如果你这笔钱拿不回来了，你能接受吗？能，那就当送给他了。不能，就别借。",
+        "你评估友谊的标准是什么——帮他度过难关？还是从不让他有机会欠你？"
+      ]
+    },
+    "common_blind_spots": [
+      "把借钱等同于帮朋友——借钱是金融行为，帮忙有很多种方式",
+      "低估了钱和友谊混在一起的破坏力——催账对关系的伤害大于拒绝",
+      "只考虑借或不借，没想过中间态——比如借一部分，或者帮他想别的筹钱渠道"
+    ],
+    "related_cases": [
+      {
+        "id": "case-001",
+        "reason": "同属人生重大选择——一个在职业方向间权衡，一个在人际关系与财务风险间权衡"
+      }
+    ],
+    "source": {
+      "origin": "经典人际关系决策场景——朋友借钱",
+      "date": "2026-07-05"
+    }
+  },
+  "case-003": {
+    "id": "case-003",
+    "title": "该不该买——双十一的购物车，清还是不清",
+    "type": "消费决策",
+    "cognitive_frame": "first-principles",
+    "prototype": "需要vs想要",
+    "frame_dimensions": {
+      "base_constraint": "剥离所有'我觉得''别人说'——你的卡债3000，存款多少？下个月账单你付得起吗？",
+      "reset_view": "如果从头开始，没有双十一的倒计时，你会买这三样东西吗？",
+      "need_essence": "笔记本是生产力工具还是心理安慰剂？跑鞋是健康投资还是消费主义叙事？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "双十一快到了。你购物车里放了三个东西：一台新笔记本（现在的用了5年，确实卡了），一双心心念念的跑鞋（但你其实很少跑步），一个洗碗机（老婆提了几次，你觉得可有可无）。总共加起来差不多1万5。你上个月刚交了房租，信用卡还欠着3000。",
+      "constraints": [
+        "购物车总计约1万5",
+        "信用卡还欠3000",
+        "笔记本确实该换了但还能撑",
+        "跑鞋是想要不是需要",
+        "洗碗机老婆想要但你觉得可有可无"
+      ],
+      "time_pressure": "双十一优惠过了今晚就结束"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "买了，快递到了那几天很快乐。没买，省了1万5，但心里一直惦记。",
+        "mid_term": "3个月后，笔记本用上了确实爽。跑鞋跑了三次就吃灰了。洗碗机——你老婆说你买对了。",
+        "long_term": "一年后回头看，双十一买的东西有多少是真正在用的？有多少是买了就后悔的？"
+      },
+      "perspective_shift": {
+        "boss": "你老婆想要洗碗机，你说可有可无——但洗碗的人不是你。",
+        "executor": "信用卡还欠着3000，又花1万5——银行出账单的时候你会后悔。",
+        "opponent": "双十一的优惠是真优惠吗？你把原价抬高了再打折这事你又不是不知道。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设双十一不买就亏了。",
+        "if_false": "如果不买，钱省下来了。三个月后你发现那个笔记本又降了500。",
+        "if_reverse": "如果下个月你突然需要用一笔钱（比如修车、看病），这1万5花出去了你怎么办？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的需要——笔记本是真的卡得用不了，还是你觉得该换了？",
+      "hypothesis": "你假设双十一的价格是一年里最便宜的。真的去比过价吗？还是被促销氛围推着走的？",
+      "evidence": "你说跑鞋心心念念——上次跑步是什么时候？三个月前还是一年前？",
+      "perspective": "如果你老婆说洗碗机她来付钱，你的决策会变吗？",
+      "consequence": "全买了→下个月信用卡账单1万8→省吃俭用两个月。都不买→省1万5→但每天面对一个卡得不行的笔记本。"
+    },
+    "bindings": {
+      "weighted_knife": "time_fold",
+      "enhanced_questions": [
+        "三个东西全买、买一个、全不买——你排个优先级给我看看？",
+        "买笔记本是投资生产力，买跑鞋是投资健康，买洗碗机是投资家庭关系——你觉得哪个最值？"
+      ]
+    },
+    "common_blind_spots": [
+      "把想要当成需要",
+      "被促销氛围绑架判断",
+      "只算买不买，没算买了之后的使用成本（跑鞋买了一年跑三次＝每公里成本极高）"
+    ],
+    "related_cases": [
+      {
+        "id": "case-001",
+        "reason": "同属两难选择——跳槽在安全与机会间权衡，消费在满足与克制间权衡"
+      }
+    ],
+    "source": {
+      "origin": "经典消费决策场景——冲动消费还是理性克制",
+      "date": "2026-07-05"
+    }
+  },
+  "case-004": {
+    "id": "case-004",
+    "title": "该不该开口——发现同事的错，说还是不说",
+    "type": "人际关系",
+    "cognitive_frame": "decision-framework",
+    "prototype": "人情vs利害",
+    "frame_dimensions": {
+      "define_decision": "你真正在决定的是开口，还是决定一段微妙的同事关系往哪个方向走？",
+      "decompose_options": "当面说/私聊说/先试探/找第三人转达——不是只有两个选项",
+      "stress_test": "后悔测试：如果一年后项目出了问题，你是因为没开口后悔，还是因为开口方式不对后悔？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你和同事小王一起做一个项目。你发现他负责的部分有一个明显的错误，如果按现在的方案往下走，月底交付时大概率会被客户打回来。但你和他的关系一直有点微妙——不是敌人，也不是朋友，就是那种共事三年、在同一个办公室但从不一起吃午饭的同事。你说了，他可能觉得你在挑刺。你不说，项目出问题你也要背锅。",
+      "constraints": [
+        "发现同事有明显的错误",
+        "不说项目会出问题，你也要一起背锅",
+        "说了可能关系搞僵",
+        "你们关系微妙——不是敌人也不是朋友"
+      ],
+      "time_pressure": "还有一周就到内部评审节点"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "不说，这周太平。说了，可能尴尬几天。",
+        "mid_term": "3个月后，项目出了问题，你们一起加班到半夜改bug——你会后悔当时没说。",
+        "long_term": "一年后回头看，这件事本身不大。但你怎么处理'该开口时开不开口'这个习惯，会影响你很多年。"
+      },
+      "perspective_shift": {
+        "boss": "领导只看结果。项目出了问题，不会问是谁的错。会问：你们团队为什么没有提前发现？",
+        "executor": "如果你是小王——你希望别人发现问题的时候告诉你，还是瞒着你让你自己碰壁？",
+        "opponent": "你确定真的是他错，不是你没看懂他的方案？万一你是错的，开了口你怎么收场？"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设开口一定会搞僵关系。",
+        "if_false": "如果小王的反应是'还好你发现了'——你白白担心了三天。",
+        "if_reverse": "如果你不开口，项目出了问题——领导知道了你早就发现问题但没说，你担的责任比小王更大。"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的说出来会搞僵关系——是你之前有过类似的经历，还是你只是害怕？",
+      "hypothesis": "你假设他一定会觉得你在挑刺。你凭什么这么确定？他之前对别人的反馈是什么反应？",
+      "evidence": "你说'大概率会被客户打回来'——这个判断的依据是什么？是经验，还是直觉？",
+      "perspective": "如果发现错误的是小王，他发现了你的错——你希望他说还是不说？",
+      "consequence": "说了→他改了→项目过了→以后反而好合作了。不说→项目出问题→两个人一起背锅→关系更僵。"
+    },
+    "bindings": {
+      "weighted_knife": "perspective_shift",
+      "enhanced_questions": [
+        "你和小王的关系微妙——这个微妙是你自己的感觉，还是他明确表现过不友善？",
+        "抛开关系因素，光从项目角度，这个错误如果不改后果多严重？"
+      ]
+    },
+    "common_blind_spots": [
+      "把'担心关系变僵'当作不开口的充分理由——其实是在逃避尴尬",
+      "高估了开口的负面影响，低估了不开口的长期代价",
+      "把是非问题和关系问题混在一起谈"
+    ],
+    "related_cases": [
+      {
+        "id": "case-002",
+        "reason": "同属人际关系中的两难——一个涉及金钱，一个涉及开口"
+      }
+    ],
+    "source": {
+      "origin": "经典职场人际关系场景——要不要开口指出别人的错误",
+      "date": "2026-07-05"
+    }
+  },
+  "case-005": {
+    "id": "case-005",
+    "title": "该不该学——AI时代来了，要不要报班",
+    "type": "学习决策",
+    "cognitive_frame": "sharp-edge-standard",
+    "prototype": "花钱买安心",
+    "frame_dimensions": {
+      "uniqueness": "你是因为真的想学而报班，还是因为周围人在报你感到焦虑？如果周围没人报，你还会报吗？",
+      "penetration": "你是在解决'怎么学AI'这个问题，还是用报课掩盖了'你不习惯用行动代替花钱'这个更深的问题？",
+      "impact": "这个决定让你自己停顿了吗——'我是不是又用花钱缓解焦虑了'？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "最近朋友圈铺天盖地都在聊AI。你身边好几个朋友都报了AI课，有人学提示词，有人学编程，有人已经用AI搞了副业。你有点焦虑——感觉不学就要被落下了。但你也清楚自己：以前报过健身课去了三次就没去了，买过英语课听了两节就吃灰了。这次AI课4000块，8周。你每天下班回来就累得不想动。",
+      "constraints": [
+        "AI课4000块，8周",
+        "自己以前报的课很少有坚持下来的",
+        "每天下班很累，不想动脑子",
+        "圈子里的朋友都在学，有压力"
+      ],
+      "time_pressure": "没有硬性时间压力，但焦虑在涨"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "报了，焦虑暂时缓解了。没报，焦虑还在。",
+        "mid_term": "3个月后，课可能只学了两周，跟之前买的英语课结局一样。",
+        "long_term": "一年后回头看，问题不是'要不要学AI'，是'我面对新事物的时候，是习惯性地用买课缓解焦虑，还是先想清楚再行动'。"
+      },
+      "perspective_shift": {
+        "boss": "你以前报健身课和英语课的经历已经说明了一个模式——靠花钱缓解焦虑，不是靠行动。",
+        "executor": "那些靠AI搞了副业的朋友，他们每天花了多少时间？你确定你也能拿出那个时间？",
+        "opponent": "AI不会因为你报了一个课就学会。AI是靠用的——你每天打开ChatGPT跟它聊半小时，比上什么课都管用。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设报课=学会。",
+        "if_false": "4000块花了，去了两周就不去了——钱白花，焦虑反而更重。",
+        "if_reverse": "如果不报课，每天晚上花20分钟免费跟AI聊天、试着解决一个实际问题——一个月后你可能会得比上课还多。"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的学会了AI——具体来说，你希望学会之后能干什么？",
+      "hypothesis": "你假设报课是唯一的学习路径。免费的教程、博客、跟AI本身对话——这些试过吗？",
+      "evidence": "你说好几个朋友都报了——他们真的坚持学完了吗？还是跟你一样报了就吃灰？",
+      "perspective": "如果这个课不是4000块，是40块，你的决策会变吗？如果你愿意为40块的课行动，那问题不是钱，是行动力。",
+      "consequence": "报了→头两周很新鲜→第三周忙起来断了→开始自责。不报→焦虑→但去试了免费资源→发现也能学会一点→焦虑缓解了。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "你以前报课坚持不下来的原因是什么？没时间？没兴趣？还是方法不对？",
+        "如果你今天就开始用AI解决一个工作中的实际问题，需要多少钱？需要报课吗？"
+      ]
+    },
+    "common_blind_spots": [
+      "用花钱替代行动——买课不等于学会",
+      "高估了报课的收益，低估了免费资源的价值",
+      "在焦虑中做决策，不是在清醒中做决策"
+    ],
+    "related_cases": [
+      {
+        "id": "case-003",
+        "reason": "同属消费与学习决策交叉——买课也是一种消费，跟双十一买东西的心理机制类似"
+      }
+    ],
+    "source": {
+      "origin": "经典学习焦虑场景——新趋势来了，要不要报班",
+      "date": "2026-07-05"
+    }
+  },
+  "case-006": {
+    "id": "case-006",
+    "title": "该不该换个城市——去更大的世界还是守着已有的生活",
+    "type": "人生决策",
+    "cognitive_frame": "cognitive-sovereignty",
+    "prototype": "安全vs成长",
+    "frame_dimensions": {
+      "meaning_perception": "你现在生活的城市，还能给你'向上生长的空间'吗？那些让你兴奋的东西，是在这里还是在别处？",
+      "value_judgment": "什么是你的价值？安稳的朋友圈和熟悉的街道，还是更大的平台和更多的可能性？",
+      "world_construction": "你在建'我在故乡活了一辈子'还是'我去闯过'的人生版本？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你在现在的二线城市干了六年，房价买得起，朋友都在这里，爸妈也在隔壁小区。日子过得不错，但你知道这里的天花板——你的岗位已经到头了，身边的人在讨论的不再是成长，是孩子上哪个幼儿园。最近，一个一线城市的机会找上门来，工资翻了一倍，但房价是现在的3倍，意味着你可能从有房一族变成租房一族，从每天晚饭妈做好变成自己烧。你32岁，单身。",
+      "constraints": [
+        "现在的城市有房、有朋友、有家人，生活舒适但发展见顶",
+        "一线城市机会翻倍工资，但房价3倍，要租房",
+        "32岁，单身——去了重新开始社交，留了继续安稳但天花板已到",
+        "爸妈老了，身体开始有些小问题"
+      ],
+      "time_pressure": "对方给了一周时间考虑"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "去了，第一年最难——新环境、新人际、大概率想回来。留了，日子照旧，但那个'如果我去了会怎样'会一直挂在心里。",
+        "mid_term": "三年后，去了可能已经在新城市扎下了根。留了可能你在小城市的房子已经涨不动了，职业也进入了更深的平台期。",
+        "long_term": "十年后回头看，32岁那年是'我最后一次敢改变自己的坐标系'还是'我很庆幸我选择了留'？"
+      },
+      "perspective_shift": {
+        "boss": "你爸妈最在乎的不是你工资多少，是你好不好——身体好不好、心情好不好、安不安全。",
+        "executor": "那个一线城市的offer，给你的不只是工资翻倍——给你的是天花板被打开。但打开之后的风险全部是你自己扛。",
+        "opponent": "32岁单身去陌生城市重新开始——社交圈从零、生活基础从零、试错成本比25岁高太多。你确定你准备好从'老鸟'回到'菜鸟'了？"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设'去了=放弃安稳'和'留了=守住幸福'。",
+        "if_false": "如果三四年后你所在的城市经济开始下滑，工作岗位在收缩——你的安稳还能稳多久？",
+        "if_reverse": "如果那个一线城市的机会只是画了一个大饼，你在那边干了一年，不适应、被裁了、还得回来——你还能接受自己吗？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的'更大的世界'——是在说职业成长的可能，还是在说'外面的世界很精彩'那个模糊的向往？",
+      "hypothesis": "你假设留下来的生活是无波澜的循环。但你的爸妈在老去，你的朋友会搬走——'留下来'不等于'留下来享受安稳'。",
+      "evidence": "你说'天花板到了'——你说的是整个城市的天花板，还是你现在这家公司、这个岗位的天花板？换公司不换城市也是一种选择。",
+      "perspective": "如果你爸明天告诉你'你放心去，我们自己能照顾自己'——你的决策会变吗？你现在不确定的到底是自己的勇气，还是放不下对父母的愧疚？",
+      "consequence": "去了→你新城市的生活可能精彩也可能失败→但你学会了在不同坐标系中切换。留了→安稳→十年后那个'如果'永远没有人能帮你回答。"
+    },
+    "bindings": {
+      "weighted_knife": "time_fold",
+      "enhanced_questions": [
+        "你今天焦虑的不是工资，是十年后回头看的时候，会不会后悔这一年的选择。",
+        "去的不只是换工作，是换了生活的全部坐标系——你评估过这个'全部'吗？"
+      ]
+    },
+    "common_blind_spots": [
+      "把'离开'等同于'失去'——你从二线去一线，失去的是房，获得的是时间感和可能性的重启",
+      "高估了留下能守住的东西——朋友会搬家、爸妈会老、岗位会被替换",
+      "低估了自己在陌生环境中重新适应和学习的能力——六年在一个城市已经养成了太多惯性"
+    ],
+    "related_cases": [
+      {
+        "id": "case-001",
+        "reason": "同属安全vs成长原型——一个在职业上权衡，一个在坐标系上权衡"
+      }
+    ],
+    "source": {
+      "origin": "安全vs成长原型 × 认知主权框架 → 换城市场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-007": {
+    "id": "case-007",
+    "title": "该不该离婚——留下来将就还是走出去重新开始",
+    "type": "人生决策",
+    "cognitive_frame": "cognitive-sovereignty",
+    "prototype": "安全vs成长",
+    "frame_dimensions": {
+      "meaning_perception": "这段婚姻还能让你感知到'被爱'和'在成长'吗？还是你们只是两个人在同一套房子里各过各的？",
+      "value_judgment": "什么是你的价值？一个好爸爸/好妈妈的标签，还是一个不委屈自己的选择？",
+      "world_construction": "你在建'我为孩子忍了'还是'我为自己活过'的人生版本？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你们结婚八年，有一个六岁的孩子。最近两年，你们几乎不怎么交流了。不吵架，但也不亲近。你试着跟他/她聊过——每次的回复都是'你想多了''好好的闹什么'。你不确定自己是不是还爱着这个人，还是只是习惯了。你父母一直对你说'为了孩子，忍一下'。你不知道等到孩子十八岁再离，对谁都好，还是现在离，反而更真诚。",
+      "constraints": [
+        "结婚八年，有一个六岁的孩子",
+        "夫妻感情已经在消退，但现在还没有爆发激烈冲突",
+        "双方父母都说'为了孩子忍一忍'",
+        "你不确定离了之后能不能找到更好的生活，还是会更孤独"
+      ],
+      "time_pressure": "没有硬性时间压力，但每一天的将就都在消耗你"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "现在离，孩子这么小会很难受，亲戚朋友也会有很多声音。现在不离，你们继续这样各过各的，家里像合租。",
+        "mid_term": "三年后，孩子九岁了。如果你们真的过不下去了，孩子在一个没有爱的家庭里长大，比离异家庭对他的伤害可能更深。",
+        "long_term": "十年后，孩子十六岁。你跟他/她说'爸/妈当年为了你忍了十年'——这句话会让孩子轻松吗，还是更沉重？"
+      },
+      "perspective_shift": {
+        "boss": "你爸妈说'为了孩子忍一下'——但这句话是在用他们自己的婚姻观来定义你的幸福。他们忍了一辈子，不代表你也必须忍。",
+        "executor": "你孩子不需要一个完美的家庭。他/她需要一个不委屈的父母。",
+        "opponent": "离了婚之后，你真的会找到想要的生活吗？还是你只是厌倦了现在，又把'离婚'当作了唯一的出路？"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设不离婚就能给孩子一个完整的家。",
+        "if_false": "如果孩子已经能感知到你们之间的冷漠——那个'完整的家'已经不存在了，只是壳还在。",
+        "if_reverse": "如果离了婚之后你发现自己更孤独、后悔了——你还能接受这个结果吗？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的'为了孩子忍一下'——忍的是不吵架，还是忍的是不再爱了？",
+      "hypothesis": "你假设等孩子十八岁再离是对孩子好——但你确定吗？是你真的相信这一点，还是你用它来合理化自己的犹豫？",
+      "evidence": "你们上一次真正深入地聊天、一起开心地笑，是什么时候——一周前、一个月前还是一年前？",
+      "perspective": "如果你的孩子十年后知道你为了他/她忍了十年——你觉得他/她会感动，还是会有负担？",
+      "consequence": "离了→孩子短期难受→但你自己的生命有可能重新开始。忍着→家里不出事→但你每天醒来都清楚地知道自己不在爱里。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "你以为你在保护孩子，实际上你是在用孩子保护自己——保护自己不用面对离婚的恐惧。",
+        "婚姻和孩子不是同一件事。婚姻结束了，父母的身份不会结束。"
+      ]
+    },
+    "common_blind_spots": [
+      "把不离等同于保护孩子——忽略了孩子在一个没有爱的环境中长大所受的隐性伤害",
+      "低估了自己重新开始的能力——八年的婚姻让你习惯了'两个人'的状态，但不是'无法再回到一个人'",
+      "用孩子的需要覆盖了自己的需要——你甚至都不清楚'如果不是为了孩子，我会选什么'"
+    ],
+    "related_cases": [
+      {
+        "id": "case-001",
+        "reason": "同属安全vs成长原型——跳槽在职场安全与成长间权衡，离婚在婚姻安全与情感成长间权衡"
+      }
+    ],
+    "source": {
+      "origin": "安全vs成长原型 × 认知主权框架 → 离婚场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-008": {
+    "id": "case-008",
+    "title": "该不该转行——深耕已有的专业还是清零去追一个新的方向",
+    "type": "人生决策",
+    "cognitive_frame": "cognitive-sovereignty",
+    "prototype": "安全vs成长",
+    "frame_dimensions": {
+      "meaning_perception": "你现在的工作还能让你感知到意义吗？还是你每天重复着已经烂熟的东西，心已经不在这个行业了？",
+      "value_judgment": "你的价值是十年的行业积累，还是一个重新开始但让你心动的方向？",
+      "world_construction": "你在建一个'我守住了已有的'还是一个'我愿意赌一次'的人生版本？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你做了十几年财务会计，资格证齐全，薪资在同龄人中也不算低。但这两年你越来越提不起精神——每天面对报表，没有成就感，只是把数字搬来搬去。半年前你偶然接触了一个新领域：数据分析，感到久违的兴奋。你现在报了周末班在学，但越学越纠结：要不要全职转行？一转行，十年的财会经验可能换不了多少钱了，薪资会从现在的水平掉到刚入行——你是家里的主要收入来源，孩子还在上中学。",
+      "constraints": [
+        "财会做了十几年，技术和人脉都在这个圈子里",
+        "数据分析让你感到兴奋但需要从入门做起，初期收入会降",
+        "你是家里的主要收入来源，孩子还在上学",
+        "已经三十七八岁了，转行了还能追得上吗？"
+      ],
+      "time_pressure": "不急但拖——每拖一年，转行的成本就大一年"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "现在转，头一两年工资掉下来，全家生活质量明显下降，你会有巨大的心理压力。",
+        "mid_term": "三五年后，转成了——你重新获得成长感和工作热情。没转——你还在做财会，每天还是在桌前提不起精神。",
+        "long_term": "十年后，你四十七岁。如果还在财会——你不再纠结了，已经认了。如果转了——你可能已经在数据分析领域找到了新的自己。"
+      },
+      "perspective_shift": {
+        "boss": "你是家里主要收入——孩子还在上学，大学费用等在后面。转行不是一个人的决定，是全家人要帮你扛一两年。",
+        "executor": "你老婆/老公想知道——你是真的不喜欢财会了，还是只是倦怠期？三年后数据分析也变成重复工作，你会不会再困一次？",
+        "opponent": "三十七八岁，从零开始学一个新行业——竞争激烈，年轻人比你学得快、比你要得少。你确定你不是在美化一个'看起来很酷'的方向？"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设转行=清零过去一切。",
+        "if_false": "如果财会+数据分析变成你的跨界优势——你懂业务又懂数据，比纯新手不知道强多少倍。不是清零，是叠加。",
+        "if_reverse": "如果你学了三年数据分析后发现这个行业也开始内卷了、也没有创意了——你还能再转一次吗？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的不兴奋——是财会本身无趣，还是你现在的工作环境让你窒息？换一个团队做类似的事，会不会也能重新点燃热情？",
+      "hypothesis": "你假设转行的代价是几年的低收入——但你有推过准确的数字吗？你的存款和家人支持能撑多久？",
+      "evidence": "你做数据分析感觉兴奋——是因为学新东西的新鲜感，还是因为你找到了财会没有的意义感？这两者不一样。",
+      "perspective": "如果三年后数据分析让你重新回到'每天同样的数字'的感觉——你会后悔今天的选择吗？你还会再转一次吗？",
+      "consequence": "转了→头两年经济紧张→但可能换来十年的成长。不转→经济稳定→但你心里永远留着一个'我本来可以'。"
+    },
+    "bindings": {
+      "weighted_knife": "time_fold",
+      "enhanced_questions": [
+        "十年后回头，你会后悔的是没转的那一年收入损失，还是一辈子用'太晚了'给自己发了一张放弃的通行证？",
+        "分析你的真实存款、真实花销、真实可承受的时间——你需要的是财务推演，不是直觉。"
+      ]
+    },
+    "common_blind_spots": [
+      "把转行等同于清零——忽略了经验在不同行业的迁移价值",
+      "高估了'稳定'的可持续性，低估了倦怠对长期幸福的侵蚀",
+      "用自己的年龄倒推'来不及了'——但你还能工作三十年，转行只是第一年最难"
+    ],
+    "related_cases": [
+      {
+        "id": "case-001",
+        "reason": "同属安全vs成长原型——跳槽在同一行业内权衡，转行在跨行业间抉择"
+      }
+    ],
+    "source": {
+      "origin": "安全vs成长原型 × 认知主权框架 → 转行场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-009": {
+    "id": "case-009",
+    "title": "要不要二孩——多一个孩子是加法还是减法",
+    "type": "人生决策",
+    "cognitive_frame": "cognitive-sovereignty",
+    "prototype": "安全vs成长",
+    "frame_dimensions": {
+      "meaning_perception": "第二个孩子给你的家庭带来的是更多的爱和温暖，还是更多的压力和透支？",
+      "value_judgment": "你的精力和时间是有限的——一个孩子已经消耗了大部分，再来一个，你能保证两个都照顾到位吗？",
+      "world_construction": "你在建'我尽力给了每个孩子最好的'还是一个'我为了完成别人眼中的完美家庭而透支了自己'的人生版本？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你们有一个三岁的女儿，活泼可爱但也已经让你们筋疲力尽了——双职工家庭，每天接送幼儿园、睡前故事、周末溜娃，日子被填得满当当。两边老人都在说'再生一个吧，趁我们还帮得动'。你老公/老婆看着别人家两个孩子的画面，也开始动摇。你心里是不想再生了——你怕的不是'养不起'，是'带不动'。但你能感觉到，你的另一半在遗憾。",
+      "constraints": [
+        "已有一个三岁的孩子，已经很累了",
+        "双职工家庭，每天时间被填满",
+        "两边老人都催生，配偶在动摇",
+        "不是在讨论经济能力，是在讨论精力边界"
+      ],
+      "time_pressure": "拖延——越早生对身体越好，但你没准备好"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "生了，头两年回到奶瓶和夜醒的状态——你刚刚爬出的坑，又要回去。不生，你的另一半可能带着一份遗憾走入中年。",
+        "mid_term": "三五年后，两个孩子在客厅互相追逐——那种画面会让你觉得当初的决定对了。或者，你在某个深夜崩溃了：为什么当初没有按住自己。",
+        "long_term": "二十年后，两个孩子在远方各自成家，过年回来家里一下子热闹起来——或者，你只生了一个，TA一个人扛着你们的老年，你心疼。"
+      },
+      "perspective_shift": {
+        "boss": "两边老人想要更多孙子——但养孩子的不是你爸妈，是你。他们的帮不帮你不知道。",
+        "executor": "你老公/老婆在想——如果只有这一个孩子，未来这个孩子要一个人扛六个人（你俩+四个老人）。再生一个，是帮第一个孩子分担。",
+        "opponent": "你已经知道你带不动第一个了，再生一个不是加倍——是指数级增加。不像1+1=2，是1+1=11。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设不生会让你的另一半一直遗憾。",
+        "if_false": "也许五年后你们都很庆幸没生——孩子上小学了，你们终于有了一点自己的时间，再去养一个新生儿是不可想象的。",
+        "if_reverse": "如果生了，孩子关系不好、争宠、你精力透支导致对两个都心怀愧疚——你还能说'这是为了家庭'吗？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说你怕的是带不动——是怕身体扛不住，还是怕你的注意力被两个孩子的需求撕成两半，哪一个都照顾不好？",
+      "hypothesis": "你假设生就不幸福、不生就幸福——但你有没有想过，可能无论生还是生，生活都有自己的方式让你幸福和不幸福，两样都会同时发生。",
+      "evidence": "你身边有两个孩子的家庭——他们告诉你的多半是'累但值得'——但他们会在你面前崩溃吗？你听过真正的深夜崩溃的声音吗？",
+      "perspective": "你老公/老婆在遗憾——如果你们用另一种方式来回应这个遗憾（多给现在的孩子更多体验、一起去旅行、把时间投资在'质量的深度'上），还会觉得缺什么吗？",
+      "consequence": "生了→生活被拉回原点→你可能会累到崩溃→但也可能在深夜看着两个孩子睡着的脸流泪。不生→你可能偶尔听到邻居家的婴儿哭声心里一揪→但你也能在自己的事业上走得更远。"
+    },
+    "bindings": {
+      "weighted_knife": "perspective_shift",
+      "enhanced_questions": [
+        "不是你'能不能做一个好妈妈/好爸爸'。是你'能不能成为一个不累到崩溃的自己'？",
+        "生或不生——哪个选择让你更害怕？也许那个更让你害怕的，是真正该选择的。"
+      ]
+    },
+    "common_blind_spots": [
+      "把'别人家的两个孩子'的画面当成了你的人生必答题",
+      "低估了疲惫对亲子关系质量的隐性伤害——你的耐心是有限的资源",
+      "高估了老人的帮助——他们现在能帮你，过几年不一定还有这体力"
+    ],
+    "related_cases": [
+      {
+        "id": "case-007",
+        "reason": "同属人生重大选择——离婚在关系安全与情感成长间权衡，二孩在家庭安全与个人边界间权衡"
+      }
+    ],
+    "source": {
+      "origin": "安全vs成长原型 × 认知主权框架 → 二孩场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-010": {
+    "id": "case-010",
+    "title": "该不该帮忙——同事甩锅让你帮忙擦屁股",
+    "type": "人际关系",
+    "cognitive_frame": "decision-framework",
+    "prototype": "人情vs利害",
+    "frame_dimensions": {
+      "define_decision": "你真正在决定的，是帮一个忙，还是决定以后每次他被卡住你都是那个'救火'的人？",
+      "decompose_options": "帮/不帮之外——帮他梳理思路但不动手、帮他找别人、明确告之这次帮但下次不帮",
+      "stress_test": "信任测试：如果明天领导问你为什么帮他的活，你解释得清吗？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "项目到了收尾阶段，小张负责的部分出了问题——临时抱佛脚在办公室堵你，说'兄弟帮个忙，这部分你擅长，帮我改两天就行，不然整个项目都要延了'。你知道这件事不是你的责任，而且你手上也有自己的活要赶。但他说'兄弟帮个忙'的时候，全办公室都在听，你不帮显得不近人情，帮了就得周末加班。而且这不是第一次——上次他也找你帮过一次类似的事。",
+      "constraints": [
+        "不是你的事，但你不帮项目会延期",
+        "他当着全办公室说的，不帮显得不讲义气",
+        "你手上也有自己的活要赶",
+        "这不是第一次找你帮忙了"
+      ],
+      "time_pressure": "两天，周末前要搞定"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "帮了，周末加班搞定，小张千恩万谢。不帮，你觉得在心里松了一口气，但嘴上说不出。",
+        "mid_term": "三个月后，他又来堵你了——你在上次帮他定了一个pattern：他的烂摊子你可以接。",
+        "long_term": "一年后回头看，帮或不帮都不会影响项目结果，但它定义了团队里谁是被'借'的那个人。"
+      },
+      "perspective_shift": {
+        "boss": "小张—他是真心搞不定还是拖到最后才来找你？前者是能力问题，后者是态度问题。帮你判断的不是'他怎么说'，是'他什么时候来说的'。",
+        "executor": "你帮他这两次都帮了——你以为你是在维护团队，实际上你在让他不用为自己的拖延付出代价。",
+        "opponent": "你帮了他，项目延不了，领导没人知道这件事。所有代价都在你身上。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设不帮会导致项目延期、全团队受影响。",
+        "if_false": "如果你不帮，他找不到别人，只能自己去想办法——也许他会自己搞定，也许他真的搞不定。但后果由他来承担。",
+        "if_reverse": "如果你又帮了，下次他就更加不担心拖到最后一刻——他知道你会擦屁股。"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你到底是不好意思拒绝，还是怕拒绝了之后你们之间的关系会变坏？",
+      "hypothesis": "你假设'兄弟帮个忙'是真心求助——但他在全办公室说，是想用公众压力让你没法拒绝。你确定你没被PUA？",
+      "evidence": "他上次来找你帮忙之后，他有把自己的问题改进吗？还是换了一种方式继续拖？",
+      "perspective": "如果你是他，你是真搞不定，还是觉得'反正有人能帮'——你会来找自己吗？",
+      "consequence": "帮了→他继续依赖你→你成为他的安全网。不帮→他可能会不高兴→但你给自己设立了一个边界。"
+    },
+    "bindings": {
+      "weighted_knife": "perspective_shift",
+      "enhanced_questions": [
+        "不是帮不帮的问题——是'帮的代价谁来付'的问题",
+        "你帮了他，你自己的活延期了——到时候谁来帮你？"
+      ]
+    },
+    "common_blind_spots": [
+      "把不好意思拒绝当成了不得不帮",
+      "把当众求助的公众压力当成真实需求",
+      "以为这次帮了就能终止循环——反而是开启了新的循环"
+    ],
+    "related_cases": [
+      {
+        "id": "case-002",
+        "reason": "同属人情vs利害——借钱是钱被借，这个是被借时间"
+      }
+    ],
+    "source": {
+      "origin": "人情vs利害原型 × 决策框架 → 被甩锅场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-011": {
+    "id": "case-011",
+    "title": "该不该拉黑——一个让你负能量的朋友，还要不要继续联系",
+    "type": "人际关系",
+    "cognitive_frame": "decision-framework",
+    "prototype": "人情vs利害",
+    "frame_dimensions": {
+      "define_decision": "你真正在决定的不是拉不拉黑，是你能不能再承受这段关系对你情绪的消耗。",
+      "decompose_options": "拉黑/冷处理/明确边界——不是只有两个极端",
+      "stress_test": "后悔测试：如果一个月后你后悔了，拉回来还来得及吗？如果很快他就释然了，不去找你了呢？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你有一个认识了七八年的朋友。以前挺好的，一起打球、撸串、聊梦想。但这几年，不知道为什么，每次跟他约完电话或吃完饭回家，你都感觉很累。他总是抱怨——抱怨工作、抱怨领导、抱怨世界不公。你好心给他建议，他说'你说的没用''你不懂'。你不主动找他，他就说你变了。最近他在深夜给你发长篇消息，你看了一眼，心一沉，不想回。但你觉得七八年的交情，说断就断，自己太绝情。",
+      "constraints": [
+        "认识了七八年，关系有历史基础",
+        "每次相处后你都感觉很累，每次都在消耗你",
+        "他抱怨但拒绝建议，不主动找他他就怪你变了",
+        "你觉得拉黑太绝情，但不拉黑你自己受不了"
+      ],
+      "time_pressure": "没有硬性时间压力，但你能量被持续消耗"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "拉黑了清净——但心里愧疚。不拉黑继续回复——反胃但维持着友情。",
+        "mid_term": "半年后，不拉黑——你学会了一个技巧：每次他发长篇你就回个表情包。拉黑了——你们各自安好，也许过两年他也会释然。",
+        "long_term": "十年后回头看，你放不下的不是他这个人，是你无法面对'自己绝情'的自己。"
+      },
+      "perspective_shift": {
+        "boss": "你以为你在维持一段友谊——实际上你是在维持一段'一起撸串的那个过去的自己'的幻觉。",
+        "executor": "他对你不好的时候，你还一直给他机会——你问问自己，是不是有'我是一个好人'的需求在让你忍他？",
+        "opponent": "他有没有意识到自己让你觉得累？如果他连察觉都没有，那你一个人的愧疚是在白费。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设拉黑=背叛了这段七八年的友情。",
+        "if_false": "如果这段友情早就在你心里结束了，你只是没有说出来——你现在做的不是拉黑一段关系，是承认一段关系已经不存在了。",
+        "if_reverse": "如果你不拉黑，再消耗你的能量两三年——你还有多少精力去经营其他真正滋养你的关系？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说是舍不得这段友情——你是舍不得他这个人，还是舍不得'以前的那些时光'？那是两件完全不同的事。",
+      "hypothesis": "你假设拉黑就是坏人。但也许坏人是不告诉你他让你很累然后慢慢消失——而不是明确结束一段消耗人的关系。",
+      "evidence": "过去三个月中，你和他约完之后走出来的时候，你感觉被滋养了哪怕一次吗——还是每次都很累？",
+      "perspective": "如果他对别人说你'变了'——你觉得那几个你在乎的人会相信他，还是相信你？",
+      "consequence": "拉黑了→安静了→可能一开始愧疚→如释重负。不拉黑→他继续消耗你→几年后你在心里早就把他删了，只是没说出来。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "你怕的不是失去他，是怕自己变成一个'会绝情的人'——但绝情是谁定义的？",
+        "你的时间和精力是有限的资源——用这段关系消耗掉的资源，本可以放在哪些真正让你成长的人和事上？"
+      ]
+    },
+    "common_blind_spots": [
+      "把'过去的好'当成了'现在也该忍'的通行证",
+      "低估了能量被持续消耗的隐性代价",
+      "用'我是一个好人'的人设来合理化自己的退让"
+    ],
+    "related_cases": [
+      {
+        "id": "case-002",
+        "reason": "同属人情vs利害——借钱是金钱与友情张力，拉黑是能量与友情张力"
+      }
+    ],
+    "source": {
+      "origin": "人情vs利害原型 × 决策框架 → 拉黑场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-012": {
+    "id": "case-012",
+    "title": "该不该换车——车还能开，但你很想换",
+    "type": "消费决策",
+    "cognitive_frame": "first-principles",
+    "prototype": "需要vs想要",
+    "frame_dimensions": {
+      "base_constraint": "剥离所有的'旧了''别人换了''不舒服了'——你的车还能安全地把你送到目的地吗？",
+      "reset_view": "如果没有车贷的压力，纯粹从出行的角度想——你真正需要的是代步，还是需要一种新的身份标签？",
+      "need_essence": "换车表面上是解决'旧车不舒服'，但你内心真正想解决的是'我在变老了'的焦虑。"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你开了七年的车，没有大毛病，但配置落伍了——没有CarPlay，电动座椅只有驾驶位，最近几次倒车影像还偶尔黑屏。身边几个朋友都换了新车，每次出去停在一起，你总觉得自己的车很寒酸。你最近去看了一款新车，月供2000块，三年付清。你觉得问题不太大，但老婆说'车还能开就接着开——省下来的钱带孩子出去旅行不好吗'。你不知道到底该听她的理性和你的冲动。",
+      "constraints": [
+        "旧车7年还能开，没有大毛病，只是配置落伍",
+        "新车月供2000块，三年付清",
+        "身边朋友都换了新，有社交压力",
+        "老婆说车还能开就别换，把钱省给孩子"
+      ],
+      "time_pressure": "不是急事，但每次出去停车时都觉得自己的车很寒酸"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "换了，新鲜感大概持续两周——新方向盘、新触摸屏、新CarPlay。不换，下个月朋友又换了另一辆新车，你的那种'最寒酸'的感觉又多了一天。",
+        "mid_term": "一年后，新车每月2000块的月供是实打实的。那部新车已经开始有划痕了——它不再'新'了。",
+        "long_term": "三年后你还清车贷，你的车又变成了一部'开了三年的车'——你会不会再想换一次？"
+      },
+      "perspective_shift": {
+        "boss": "你老婆说的对——你省下来的2000块可以带孩子去一个很远的城市，创造一些美好的回忆。",
+        "executor": "朋友换车不是因为他们需要，而是因为他们也在跟朋友圈较劲。你们都在'社交军备竞赛'。",
+        "opponent": "你的车能开——倒车影像偶尔黑屏可能是传感器问题，修一下只要几百块。你不需要新车，你需要的是一次维修。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设换了车你就不寒酸了。",
+        "if_false": "换了新车，你会发现自己又开始比较了——这个朋友的是X5，那个朋友的是ES6，你的还不是最好的。",
+        "if_reverse": "如果不换车，你的车在别人眼里真的那么重要吗——还是在你自己内心的照片里才重要？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你说的寒酸——是说你的车让你感觉寒酸，还是你怕自己在别人眼里就是'那个开旧车的人'？",
+      "hypothesis": "你假设朋友在注意你车——可是你真的那么注意朋友的车吗？还是他们也不在意你在不在意？",
+      "evidence": "你的车上次出问题是几百块修好的传感器故障，但你用这件事合理化了你需要新车的判断。逻辑上成立，但规模不匹配。",
+      "perspective": "如果你每天早上醒来第一件事检查的不是你的车——是你的人生在方向上的满足感，你还会换车吗？",
+      "consequence": "换了→月供2000，三年=72000——换来了大概两个月的社交快感。不换→钱省下来→用来投资孩子将来、给你的家庭旅行。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "如果你可以用2000块买到'不在朋友圈比较'的内心自由，你会花吗？",
+        "你的车已经七年了——没出大问题——它是可靠的。一辆开七年还可靠的东西不多，你确定要换吗？"
+      ]
+    },
+    "common_blind_spots": [
+      "把社交压力当成真实需求",
+      "低估了持续月供对家庭现金流的隐性消耗",
+      "以为换了车就能解决根源上的焦虑——根源不是车，是比较心"
+    ],
+    "related_cases": [
+      {
+        "id": "case-003",
+        "reason": "同属需要vs想要——一个是买买买，一个是换换换"
+      }
+    ],
+    "source": {
+      "origin": "需要vs想要原型 × 第一性原理 → 换车场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-013": {
+    "id": "case-013",
+    "title": "该不该囤书——书架上堆满了买了但没读的书",
+    "type": "消费决策",
+    "cognitive_frame": "first-principles",
+    "prototype": "需要vs想要",
+    "frame_dimensions": {
+      "base_constraint": "如果这些书不能立即解决你当前最困扰的问题，那是什么在驱动力让你反复买？",
+      "reset_view": "把所有的'想读'清单清掉——今天早上醒来，你最需要解决的那个问题，哪本书能帮你？只买那一本。",
+      "need_essence": "买书给你的是'我在学习'的心理暗示——但真正在学习的人不是在买书，是在翻到第100页。"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "上个月你买了三本书——一本架构、一本AI、一本Leadership。三本都翻了前十页，然后就放在床头落了灰。这周亚马逊又在推三本夏日特价——你翻了几页目录，觉得可能有用，放进了购物车。你书架上已经堆了十几本没读完的书。你的本能告诉你'是该先读完手头的再去买'——但每次特价推送来，你的手会自动点'加入购物车'。",
+      "constraints": [
+        "已买了三本书，每本停在十页左右",
+        "书架上堆了十几本未读完",
+        "每周推送新书特价，自动加入购物车",
+        "买书让你觉得'我在学习'——但翻书时你没有这个感觉"
+      ],
+      "time_pressure": "特价今晚结束"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "买了三本新书——快递到了，开心的半天。没买，你的购物车变空了，有点失落。",
+        "mid_term": "三个月后，新书又都是十页——跟你现在架上那十几本一起吃灰。",
+        "long_term": "一年后回头看，你今年买的十几本书——完完整整从头看到尾的那本，是你真的需要的那本。其他的都是'我想成为的那个人'需要的。"
+      },
+      "perspective_shift": {
+        "boss": "书商不是坏人——他们只是在你想要'变成更好的自己'的时候，卖给你一个'我正在变好'的快递体验。",
+        "executor": "你真正要的不是那些书——你要的是把书里的方法用出来的结果。但你连方法论都还没看完。",
+        "opponent": "十几本翻到第十页的书——你已经告诉了自己十几遍'我只需要买下，不需要读完'。你是因为习惯还是需求在买？"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设买了=学习了。",
+        "if_false": "买了不等于你在学。囤书越多，你的书架上有个'知识负债十本'的记录——每一本你放下的都叠上去。",
+        "if_reverse": "如果现在你把书架上没读完的十几本——每本重新读完第一页。如果这个动作你做不到，你凭什么相信再加三本能做到？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你真的需要这些书来解决问题——还是你把买书当作一种'我还没有放弃自己'的仪式？",
+      "hypothesis": "你假设'看了目录觉得有用'——但看了目录却没开始翻第二章，说明目录不等于你会去读完它。",
+      "evidence": "你历史上买过的书——多少本完整读完了？多少本停在了前十页？这些数据有没有在你今天加入购物车时冷静你一下？",
+      "perspective": "如果你把你的书架拍张照发给一个你尊敬的人，他看完后问'哪一本改变了你'——你能回答几本？",
+      "consequence": "买了→三本+前面的十本→书架变成了你对自己的承诺破产的记录。不买→省钱→省出一本真正能改变你的书。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "囤书不是要扩充知识——是在告诉自己'我还能抢救一下'。",
+        "你不是缺书，你是缺挡掉特价推送的能力。"
+      ]
+    },
+    "common_blind_spots": [
+      "把买书的快感等同于学习的进度",
+      "低估了'未读完'的心理负债对自信的侵蚀",
+      "用'我正在变好'的叙事来合理化消费"
+    ],
+    "related_cases": [
+      {
+        "id": "case-003",
+        "reason": "同属需要vs想要——一个在购物车消费，一个在书架上消费"
+      }
+    ],
+    "source": {
+      "origin": "需要vs想要原型 × 第一性原理 → 囤书场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-014": {
+    "id": "case-014",
+    "title": "该不该考公——当前的职业累了，铁饭碗是解药还是错觉",
+    "type": "学习决策",
+    "cognitive_frame": "sharp-edge-standard",
+    "prototype": "花钱买安心",
+    "frame_dimensions": {
+      "uniqueness": "你是真的向往体制内的工作性质，还是只是在逃避私企的焦虑？如果现在的工作氛围让你放松一些，你还会考虑考公吗？",
+      "penetration": "你是在解决'我不知道自己想干什么'的问题，还是用考公来掩盖'我没有勇气去搞清楚我想干什么'？",
+      "impact": "这个决定让你自己停顿了吗——'我是不是又在用考公路，去合理化我对现状的无力感'？"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你在互联网行业做了四五年，加班多，压力大，经常感觉被榨干。这两年，你身边越来越多的同学和朋友都考了公务员，每天5:30下班，周末不看钉钉。你不知道自己是不是该去考公——你不用特别热爱体制内的工作，你只需要一条能让你不再拖着疲惫的身体回家。但你心里有一个声音：你不知道你到底是真正想当公务员，还是只想逃离现在的生活。",
+      "constraints": [
+        "加班多压力大，感觉被榨干",
+        "身边很多人考进了体制，过上了轻松的生活",
+        "你不确定自己是不是真的喜欢体制内的安稳",
+        "有房贷，不能轻易断薪"
+      ],
+      "time_pressure": "不急但焦虑——每过一个月，就觉得自己还没想清楚"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "报名了，你会有一阵'我在改变了'的充实感。没改变，你继续焦虑。",
+        "mid_term": "一年后你在备考——你发现每天刷题的强度和现在加班差不了太多。但至少你方向清晰了。",
+        "long_term": "五到十年后，如果你真的考上了——你可能做着一份安稳但重复的工作。回想起当年在互联网的深夜加班，你觉得是解脱了还是遗憾了？如果你没考——你可能还是在焦虑中重复，但也许你在别处找到了满足感。"
+      },
+      "perspective_shift": {
+        "boss": "考公不是你'换个赛道'——你是从一种不稳定换到一种稳定，但同时换上了另一种不确定——你能不能考上？你需要多久才考上？",
+        "executor": "你身边考上了的人告诉你'很轻松'——但他们不会告诉你，通勤来回三小时或在偏远县城待着，也不一定是你想要的日子。",
+        "opponent": "如果你对现在的工作太累了——也许不是行业的问题，是这家公司、这个岗位的问题。你换一家互联网公司也能轻松一些。"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设考公是逃离压力的出口。",
+        "if_false": "考上了也可能被调到你不喜欢的岗位——面对的是沉闷和官僚主义，不是压力而是缓慢的绝望。",
+        "if_reverse": "如果你不考公，换一份压力小一些的工作——哪怕薪资掉一点——你的生活质量可能会完全不同。"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你想逃离的是'加班'还是'没有意义'——这两样可能出现在体制内也一样，只是形式不同。",
+      "hypothesis": "你假设考公是唯一的出路——但你试过在你现在的行业内换一个节奏慢一些的公司吗？",
+      "evidence": "那些考上的人——有谁跟你说过他们也有过犹豫、也有像你一样的纠结——还是你只在看他们下班早的表面？",
+      "perspective": "如果我保证你明年找到一份不用加班且薪资一样的私企工作——你还会想去考公务员吗？",
+      "consequence": "考了→考不上一两年继续焦虑→但至少你试了。不考→你得面对'我还在逃避自己真正想要什么'的问题。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "你是在用考公当'替罪羊'——把自己的焦虑归咎于行业，然后给自己找了考公这个看起来很正当的出口。",
+        "三年前你想干什么——那时候你就想当公务员吗？还是这半年被榨干后才想出来的？"
+      ]
+    },
+    "common_blind_spots": [
+      "把逃离当前痛苦等同于找到了真正的方向",
+      "低估了体制内也存在的无声的压迫感（官僚、冗长、停滞）",
+      "用'别人都考了'来证明自己的选择是唯一的"
+    ],
+    "related_cases": [
+      {
+        "id": "case-005",
+        "reason": "同属花钱买安心——一个是报AI课，一个是报考公班"
+      }
+    ],
+    "source": {
+      "origin": "花钱买安心原型 × 锋刃标准 → 考公场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  },
+  "case-015": {
+    "id": "case-015",
+    "title": "该不该考证——花半年时间考个不会用的证书",
+    "type": "学习决策",
+    "cognitive_frame": "sharp-edge-standard",
+    "prototype": "花钱买安心",
+    "frame_dimensions": {
+      "uniqueness": "你想考证，是因为它真的能打开门——还是因为别人都有这张纸，你没有让自己看起来不够努力？",
+      "penetration": "你是在补自己的能力短板，还是用'在备考'来填满'我不知道该往哪走'的空白？",
+      "impact": "你停下来想了——半年时间和上万块钱，考完如果没用，你后悔的是什么？不是浪费了钱，是浪费了时间。"
+    },
+    "version": "1.0",
+    "scenario": {
+      "background": "你做了几年项目管理，同事中好几个都在考PMP，说有了这张证更容易找工作。你看了下报名费+辅导班大概一万块，需要花半年时间准备——包括周末去上课、做模拟题。你其实不太清楚PMP在实际工作中能解决什么问题——你只是觉得'好像大家都考了，我不考像裸奔'。但如果真不管'别人怎么说'——你也不知道这半年该用来做什么。",
+      "constraints": [
+        "同事都在考PMP，有FOMO压力",
+        "报名+辅导班约一万块，半年时间",
+        "不确定考证能解决实际工作中的问题",
+        "不考证不知道该做什么——考了至少有事做"
+      ],
+      "time_pressure": "不急——但用半年'在备考'来掩盖'不知道该干嘛'的焦虑"
+    },
+    "three_knives": {
+      "time_fold": {
+        "short_term": "报名了，你有一个'我到底想做什么'的答案——'我在考PMP'。没报，你的周末空出来了——你焦虑。",
+        "mid_term": "半年后考过，证在手——但你发现没人问你要。你下一个面试官甚至都不问PMP是什么。",
+        "long_term": "一年后，如果你用这半年去主动承担一个跨部门项目——你的简历上不是一个PMP三个字母，而是一段真正的'领导跨职能团队完成里程碑'的经历。面试官会选哪一个？"
+      },
+      "perspective_shift": {
+        "boss": "面试官在判断你时——PMP只能证明你背出了PMBOK。一个交付过的项目能证明你在真实的压力下搞定过真实的人。",
+        "executor": "同事考PMP是因为他们也跟你一样焦虑——你们在互相安慰。",
+        "opponent": "半年时间加上一万块钱——你去付费加入一个需要交付的项目、免费兼一个非营利项目的项目经理，六个月后你有一个真实的交付——不比PMP值钱？"
+      },
+      "counterfactual": {
+        "key_assumption": "你假设考证=提升竞争力。",
+        "if_false": "考证不会自动给你竞争力——它只是一个筛选器的关键词。面试官看到PMP不会说'这人好厉害'，会说'下一条'。",
+        "if_reverse": "如果你用这半年去完成一次从0到1的项目交付——你的简历上多了'落地能力'的证明，你不缺证你还缺什么？"
+      }
+    },
+    "socratic_questions": {
+      "clarify": "你想用这张证，是敲开一个特定的门，还是给自己找一个'我没有在闲着'的证据？",
+      "hypothesis": "你假设考证能解决职业方向的问题——但考证之后你还是不知道你该往哪个方向发展。",
+      "evidence": "你身边考过PMP的同事——他们考完之后项目做得更好了吗？还是他们也只是'有了那张证'？",
+      "perspective": "如果今天你有一个必须在下周完成交付的项目，你会先挂证还是先去交付？这个回答决定了你真正需要什么。",
+      "consequence": "考了→半年和一个证→你可能还是不知道你该干嘛。不考→这半年你得面对'我真的不知道我该做什么'的恐惧。"
+    },
+    "bindings": {
+      "weighted_knife": "counterfactual",
+      "enhanced_questions": [
+        "你缺的不是证——是真正落地过的一个项目。",
+        "证书是买来的安全感，项目是打来的竞争力。"
+      ]
+    },
+    "common_blind_spots": [
+      "把考证当成了提升竞争力——但竞争力来自能否做事，不来自能否背书",
+      "高估了证书在招聘中的权重——真正的面试不在乎你是否多一张纸",
+      "用备考的忙碌掩盖了自己还看不清方向的问题"
+    ],
+    "related_cases": [
+      {
+        "id": "case-005",
+        "reason": "同属花钱买安心——一个是报AI课，一个是考证"
+      }
+    ],
+    "source": {
+      "origin": "花钱买安心原型 × 锋刃标准 → 考证场景",
+      "date": "2026-07-05",
+      "method": "cognitive-frame-driven"
+    }
+  }
+};
+
+// ─── State ─────────────────────────────────────
+let state = {
+  currentCaseId: null,
+  currentCase: null,
+  phase: 'cases',
+  judgment: '',
+  socraticIndex: 0,
+  socraticAnswers: [],
+  sessionCount: 0
+};
+let casesIndex = null;
+let caseCache = {};
+
+// ─── Init ──────────────────────────────────────
+loadTrainingData();
+loadCases();
+
+function loadTrainingData() {
+  try {
+    let d = JSON.parse(localStorage.getItem('judgment_arena') || '{}');
+    state.sessionCount = d.sessions ? d.sessions.length : 0;
+    state.sessions = d.sessions || [];
+  } catch(e) {
+    state.sessions = [];
+    state.sessionCount = 0;
+  }
+}
+
+function saveTrainingData() {
+  localStorage.setItem('judgment_arena', JSON.stringify({
+    sessions: state.sessions || []
+  }));
+  updateProgress();
+}
+
+function getPhase(count) {
+  if (count <= 7) return { id: 'see', label: '阶段一：看见', cls: 'phase-see' };
+  if (count <= 14) return { id: 'understand', label: '阶段二：理解', cls: 'phase-understand' };
+  return { id: 'internalize', label: '阶段三：内化', cls: 'phase-internalize' };
+}
+
+function updateProgress() {
+  let count = state.sessionCount || 0;
+  let p = getPhase(count);
+  document.getElementById('phaseLabel').textContent = p.label;
+  document.getElementById('phaseLabel').className = 'phase-badge ' + p.cls;
+  document.getElementById('countLabel').textContent = count + '/21 次';
+  document.getElementById('progressFill').style.width = (count / 21 * 100) + '%';
+}
+
+// ─── Load Cases ───────────────────────────────
+function loadCases() {
+  casesIndex = EMBEDDED_CASES_INDEX;
+  renderFilterBar();
+  renderCaseGrid('all');
+}
+
+function loadCase(id) {
+  if (caseCache[id]) return caseCache[id];
+  if (!EMBEDDED_CASES[id]) {
+    console.error('Case not found:', id);
+    return null;
+  }
+  caseCache[id] = EMBEDDED_CASES[id];
+  return EMBEDDED_CASES[id];
+}
+
+// ─── Render ────────────────────────────────────
+function renderFilterBar() {
+  let types = [];
+  if (casesIndex && casesIndex.prototypes) {
+    types = Object.entries(casesIndex.prototypes).map(([k,v]) => ({ name: k, label: k + '(' + v + ')' }));
+  }
+  let html = '<button class="filter-btn active" data-filter="all" onclick="setFilter(\'all\')">全部</button>';
+  types.forEach(t => {
+    html += `<button class="filter-btn" data-filter="${t.name}" onclick="setFilter('${t.name}')">${t.label}</button>`;
+  });
+  document.getElementById('filterBar').innerHTML = html;
+}
+
+function setFilter(type) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.filter-btn[data-filter="${type}"]`).classList.add('active');
+  renderCaseGrid(type);
+}
+
+function renderCaseGrid(filter) {
+  if (!casesIndex) return;
+  let done = new Set((state.sessions || []).map(s => s.caseId));
+  let cases = filter === 'all' ? casesIndex.builtin_cases : casesIndex.builtin_cases.filter(c => c.prototype === filter);
+  let html = cases.map(c => `
+    <div class="case-card ${done.has(c.id) ? 'done' : ''}" onclick="startCase('${c.id}')">
+      ${done.has(c.id) ? '<span class="check">✓</span>' : ''}
+      <div class="tag">${c.prototype}</div>
+      <h3>${c.title}</h3>
+      <p>${c.cognitive_frame}</p>
+    </div>
+  `).join('');
+  document.getElementById('caseGrid').innerHTML = html || '<div style="text-align:center;padding:40px;color:var(--text-dim)">该类型暂无案例</div>';
+}
+
+// ─── Phase Navigation ─────────────────────────
+function showPhase(p) {
+  state.phase = p;
+  document.querySelectorAll('.phase-section').forEach(el => el.classList.remove('active'));
+  document.getElementById('phase-' + p).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  if (p === 'stats') renderStats();
+  if (p === 'socratic') startSocratic();
+}
+
+// ─── Start Case ───────────────────────────────
+function startCase(id) {
+  let c = loadCase(id);
+  state.currentCaseId = id;
+  state.currentCase = c;
+  state.judgment = '';
+  state.socraticIndex = 0;
+  state.socraticAnswers = [];
+
+  // Render scenario
+  let s = c.scenario;
+  let html = `<h2>${c.title}</h2>`;
+  html += `<p>${s.background}</p>`;
+  if (s.constraints && s.constraints.length) {
+    html += `<h3>约束条件</h3><div class="flex gap-4">`;
+    s.constraints.forEach(cn => { html += `<span class="constraint-badge">${cn}</span>`; });
+    html += `</div>`;
+  }
+  if (s.time_pressure) {
+    html += `<h3>时间压力</h3><p style="font-size:.85rem;color:var(--text-dim)">${s.time_pressure}</p>`;
+  }
+  document.getElementById('scenarioBox').innerHTML = html;
+
+  // Reset judgment input
+  document.getElementById('judgmentInput').value = '';
+  document.getElementById('submitJudgmentBtn').disabled = true;
+
+  showPhase('scenario');
+}
+
+// Enable submit button when judgment input has text
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'judgmentInput') {
+    document.getElementById('submitJudgmentBtn').disabled = e.target.value.trim().length < 2;
+  }
+});
+
+function submitJudgment() {
+  state.judgment = document.getElementById('judgmentInput').value.trim();
+  if (state.judgment.length < 2) return;
+  renderKnives();
+  showPhase('knives');
+}
+
+// ─── Knives ───────────────────────────────────
+function renderKnives() {
+  let c = state.currentCase;
+  if (!c || !c.three_knives) return;
+  let knives = c.three_knives;
+  let items = [
+    { key: 'time_fold', name: '🥊 时间折叠人', icon: '3天 / 3月 / 3年', data: knives.time_fold },
+    { key: 'perspective_shift', name: '🔄 换位者', icon: '老板 / 执行者 / 反对者', data: knives.perspective_shift },
+    { key: 'counterfactual', name: '⚡ 反事实者', icon: '假设检验', data: knives.counterfactual }
+  ];
+  
+  let html = '';
+  items.forEach((item, i) => {
+    html += `<div class="knife-panel">
+      <div class="knife-header" onclick="toggleKnife(this)">
+        <span><span class="name">${item.name}</span> <span style="font-size:.75rem;color:var(--text-muted)">${item.icon}</span></span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="knife-body">`;
+    
+    if (item.data) {
+      if (item.data.short_term) html += `<p><strong>短期：</strong>${item.data.short_term}</p>`;
+      if (item.data.mid_term) html += `<p><strong>中期：</strong>${item.data.mid_term}</p>`;
+      if (item.data.long_term) html += `<p><strong>长期：</strong>${item.data.long_term}</p>`;
+      if (item.data.boss) html += `<p><strong>老板视角：</strong>${item.data.boss}</p>`;
+      if (item.data.executor) html += `<p><strong>执行者视角：</strong>${item.data.executor}</p>`;
+      if (item.data.opponent) html += `<p><strong>反对者视角：</strong>${item.data.opponent}</p>`;
+      if (item.data.key_assumption) html += `<p><strong>核心假设：</strong>${item.data.key_assumption}</p>`;
+      if (item.data.if_false) html += `<p><strong>如果假设不成立：</strong>${item.data.if_false}</p>`;
+      if (item.data.if_reverse) html += `<p><strong>如果反过来：</strong>${item.data.if_reverse}</p>`;
+    }
+    
+    html += `</div></div>`;
+  });
+  document.getElementById('knivesContainer').innerHTML = html;
+
+  // Auto-open first knife
+  let first = document.querySelector('.knife-panel');
+  if (first) {
+    first.querySelector('.knife-header').classList.add('open');
+    first.querySelector('.knife-body').classList.add('open');
+  }
+
+  document.getElementById('knivesDone').classList.remove('hidden');
+}
+
+function toggleKnife(header) {
+  header.classList.toggle('open');
+  let body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ─── Socratic ─────────────────────────────────
+function startSocratic() {
+  let c = state.currentCase;
+  if (!c || !c.socratic_questions) return;
+  
+  let qKeys = ['clarify', 'hypothesis', 'evidence', 'perspective', 'consequence'];
+  let qLabels = { clarify: '澄清', hypothesis: '假设检验', evidence: '证据检验', perspective: '视角转换', consequence: '后果追踪' };
+  let questions = qKeys.filter(k => c.socratic_questions[k]).map(k => ({
+    key: k,
+    label: qLabels[k] || k,
+    text: c.socratic_questions[k]
+  }));
+
+  // Pick first 3-4
+  let selected;
+  if (c.bindings && c.bindings.weighted_knife === 'counterfactual') {
+    // Start with hypothesis/evidence for counterfactual dominant cases
+    selected = [questions.find(q => q.key === 'hypothesis'), questions.find(q => q.key === 'evidence')]
+      .filter(Boolean).concat(questions.filter(q => q.key !== 'hypothesis' && q.key !== 'evidence'));
+  } else {
+    selected = questions;
+  }
+  selected = selected.slice(0, 4);  // max 4 rounds
+
+  state.socraticIndex = 0;
+  state.socraticAnswers = [];
+  state.socraticQuestions = selected;
+  renderSocraticQuestion(0);
+}
+
+function renderSocraticQuestion(idx) {
+  let qs = state.socraticQuestions;
+  if (!qs || idx >= qs.length) {
+    // Done with socratic, move to review
+    showPhase('review');
+    renderReview();
+    return;
+  }
+  
+  let q = qs[idx];
+  let container = document.getElementById('socraticContainer');
+  container.innerHTML = `
+    <div class="socratic-question">
+      <span class="q-type">${q.label}</span>
+      <div class="q-text">${q.text}</div>
+      <div class="textarea-block">
+        <label>你的回答</label>
+        <textarea id="socraticAnswer" rows="3" placeholder="想清楚再写..."></textarea>
+      </div>
+      <button class="btn btn-primary" id="submitSocraticBtn" onclick="submitSocraticAnswer()" disabled>提交回答</button>
+      <div class="q-response" id="socraticResponse"></div>
+    </div>
+  `;
+  
+  document.getElementById('submitSocraticBtn').disabled = true;
+  document.getElementById('socraticAnswer').addEventListener('input', function() {
+    document.getElementById('submitSocraticBtn').disabled = this.value.trim().length < 1;
+  });
+  document.getElementById('socraticAnswer').focus();
+}
+
+function submitSocraticAnswer() {
+  let answer = document.getElementById('socraticAnswer').value.trim();
+  if (!answer) return;
+  
+  state.socraticAnswers.push(answer);
+  
+  // Show response and next button
+  let response = document.getElementById('socraticResponse');
+  response.style.display = 'block';
+  
+  // Simple follow-up based on keywords
+  let followUps = {
+    clarify: '你说出了你理解的概念。接下来试试——如果换一个人用不同的定义说同一件事，你会怎么回应？',
+    hypothesis: '你的假设说出来了。下一步是问自己：这个假设如果今天就不成立，你的判断还站得住吗？',
+    evidence: '你找到了依据。现在问自己：有没有相反的证据你忽略了？如果有，它会影响你的判断吗？',
+    perspective: '你看到了另一个角度。试试再找一个——谁能从你完全想不到的立场来看这件事？',
+    consequence: '你推到了后果。最后一个问题：如果这个后果不会发生，你现在的判断会不同吗？'
+  };
+  
+  let q = state.socraticQuestions[state.socraticIndex];
+  response.innerHTML = '<em>' + (followUps[q.key] || '好的，已经记录。）') + '</em>';
+  
+  document.getElementById('submitSocraticBtn').disabled = true;
+  document.getElementById('socraticAnswer').disabled = true;
+  
+  // Auto advance after a moment
+  let nextIdx = state.socraticIndex + 1;
+  state.socraticIndex = nextIdx;
+  
+  setTimeout(() => {
+    renderSocraticQuestion(nextIdx);
+  }, 1800);
+}
+
+// ─── Review ────────────────────────────────────
+function renderReview() {
+  let c = state.currentCase;
+  let grid = document.getElementById('reviewGrid');
+  grid.innerHTML = `
+    <div class="review-box">
+      <h3>你最初的判断</h3>
+      <p>${state.judgment || '(未记录)'}</p>
+    </div>
+    <div class="review-box">
+      <h3>案例类型</h3>
+      <p>原型：${c.prototype || '-'} | 认知框架：${c.cognitive_frame || '-'}</p>
+      ${c.bindings && c.bindings.weighted_knife ? `<p style="margin-top:8px;font-size:.82rem">强化刀：${c.bindings.weighted_knife}</p>` : ''}
+      ${c.common_blind_spots ? `<p style="margin-top:8px;font-size:.82rem">常见盲区：${c.common_blind_spots.slice(0,2).join('、')}</p>` : ''}
+    </div>
+  `;
+  document.getElementById('blindCount').value = '';
+  document.getElementById('blindSpots').value = '';
+  document.getElementById('insight').value = '';
+}
+
+// ─── Save ──────────────────────────────────────
+function saveSession() {
+  let count = parseInt(document.getElementById('blindCount').value) || 0;
+  let spots = document.getElementById('blindSpots').value.trim();
+  let insight = document.getElementById('insight').value.trim();
+
+  let session = {
+    id: (state.sessions.length + 1),
+    date: new Date().toISOString().slice(0, 10),
+    caseId: state.currentCaseId,
+    title: state.currentCase ? state.currentCase.title : '',
+    prototype: state.currentCase ? state.currentCase.prototype : '',
+    judgment: state.judgment,
+    blindSpotCount: count,
+    blindSpots: spots,
+    insight: insight,
+    socraticAnswers: state.socraticAnswers
+  };
+
+  state.sessions.push(session);
+  state.sessionCount = state.sessions.length;
+  saveTrainingData();
+
+  // Show done message
+  document.getElementById('phase-review').innerHTML = `
+    <div style="text-align:center;padding:40px">
+      <h2 style="color:var(--gold);font-size:1.5rem">✅ 第 ${session.id} 次训练已记录</h2>
+      <p style="color:var(--text-dim);margin:12px 0">当前阶段：${getPhase(state.sessionCount).label}</p>
+      <p style="color:var(--text-dim);margin:12px 0">发现盲区：${count} 个</p>
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="location.reload()">再来一次</button>
+        <button class="btn" onclick="showPhase('stats')">看训练记录</button>
+      </div>
+    </div>
+  `;
+}
+
+// ─── Stats ─────────────────────────────────────
+function renderStats() {
+  let sessions = state.sessions || [];
+  let count = sessions.length;
+
+  let statsHtml = `
+    <div class="stat-box"><div class="num">${count}</div><div class="label">总训练次数</div></div>
+    <div class="stat-box"><div class="num">${count > 0 ? Math.round(sessions.reduce((s,x) => s + (x.blindSpotCount || 0), 0) / count * 10) / 10 : 0}</div><div class="label">平均盲区发现</div></div>
+    <div class="stat-box"><div class="num">${getPhase(count).label.slice(0,3)}</div><div class="label">当前阶段</div></div>
+    <div class="stat-box"><div class="num">${count >= 21 ? '🎉' : (21 - count) + '次'}</div><div class="label">距完成</div></div>
+  `;
+  document.getElementById('statsGrid').innerHTML = statsHtml;
+
+  if (sessions.length === 0) {
+    document.getElementById('sessionList').innerHTML =
+      '<div style="text-align:center;color:var(--text-dim);padding:20px;font-size:.9rem">还没有训练记录。开始你的第一次训练吧。</div>';
+    return;
+  }
+
+  let listHtml = '<h3 style="font-size:.95rem;margin-bottom:8px;color:var(--text-dim)">训练历史</h3>';
+  sessions.slice().reverse().forEach(s => {
+    listHtml += `<div class="session-item">
+      <span class="date">#${s.id} ${s.date}</span>
+      <strong>${s.title}</strong>
+      <span style="color:var(--text-muted)"> | ${s.prototype || '-'}</span>
+      ${s.blindSpotCount ? ` | 盲区 ${s.blindSpotCount} 个` : ''}
+      ${s.insight ? ` | ${s.insight.slice(0,30)}${s.insight.length > 30 ? '...' : ''}` : ''}
+    </div>`;
+  });
+  document.getElementById('sessionList').innerHTML = listHtml;
+}
+
+// ─── Clear Data ────────────────────────────────
+function clearAllData() {
+  if (!confirm('确定清除所有训练数据？')) return;
+  localStorage.removeItem('judgment_arena');
+  state.sessions = [];
+  state.sessionCount = 0;
+  saveTrainingData();
+  renderStats();
+}
+
+// ─── Init ──────────────────────────────────────
+updateProgress();
+</script>
+</body>
+</html>
